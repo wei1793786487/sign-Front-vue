@@ -20,7 +20,7 @@
               <el-input
                 v-model="loginForm.username"
                 prefix-icon="iconfont icon-bussiness-man-fill "
-              ></template>
+              ></el-input>
             </el-form-item>
             <!-- 密码 -->
             <el-form-item prop="password">
@@ -29,7 +29,7 @@
                 v-model="loginForm.password"
                 prefix-icon=" iconfont icon-password1"
                 @keyup.enter.native="login"
-              ></template>
+              ></el-input>
             </el-form-item>
             <!-- <el-form-item>
                 <el-checkbox  v-model="checked">七天免登陆</el-checkbox>
