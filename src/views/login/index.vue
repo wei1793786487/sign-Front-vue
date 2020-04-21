@@ -19,7 +19,7 @@
             <el-form-item prop="username">
               <el-input
                 v-model="loginForm.username"
-                prefix-icon="iconfont icon-bussiness-man-fill "
+                prefix-icon="el-icon-user-solid"
               ></el-input>
             </el-form-item>
             <!-- 密码 -->
@@ -27,7 +27,7 @@
               <el-input
                 type="password"
                 v-model="loginForm.password"
-                prefix-icon=" iconfont icon-password1"
+                prefix-icon="el-icon-edit"
                 @keyup.enter.native="login"
               ></el-input>
             </el-form-item>

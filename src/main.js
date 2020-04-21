@@ -14,9 +14,6 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-//那种类型的icons
-import '@/assets/font/iconfont.css'
-
 
 Vue.use(ElementUI)
 

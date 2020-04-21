@@ -90,7 +90,7 @@ export const constantRoutes = [
     ]
   }
 ]
-
+  
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
@@ -103,7 +103,7 @@ export const asyncRoutes = [
     name: 'Nested',
     meta: {
       title: 'Nested',
-      icon: 'nested'
+      icon: 'demo'
     },
     children: [
       {
