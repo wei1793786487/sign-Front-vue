@@ -1,92 +1,101 @@
 <template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+  <div class="homepage-hero-module">
+    <div class="video-container">
+      <div :style="fixStyle" class="filter">
+        <div class="title_style">
+          <strong>签到系统管理登录界面</strong>
+        </div>
 
-      <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <!-- 登录开始 -->
+        <div class="login_box">
+          <!-- 登录表单区 -->
+          <el-form
+            label-width="0px "
+            ref="loginFormRef"
+            :rules="loginFormRole"
+            :model="loginForm"
+            class="login_form"
+          >
+            <el-form-item prop="username">
+              <el-input
+                v-model="loginForm.username"
+                prefix-icon="iconfont icon-bussiness-man-fill "
+              ></template>
+            </el-form-item>
+            <!-- 密码 -->
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                v-model="loginForm.password"
+                prefix-icon=" iconfont icon-password1"
+                @keyup.enter.native="login"
+              ></template>
+            </el-form-item>
+            <!-- <el-form-item>
+                <el-checkbox  v-model="checked">七天免登陆</el-checkbox>
+            </el-form-item>-->
+            <!-- 确认按钮 -->
+            <el-form-item>
+              <el-button class="btns" type="primary" size="medium" @click="login">登录</el-button>
+            </el-form-item>
+          </el-form>
+          <div class="status">
+            服务器状态 :
+            <span :style="{color:color}">{{status?"正常":"异常"}}</span>
+          </div>
+        </div>
+
+        <!-- 登录结束 -->
+        <!-- <div class="saying">
+         &ensp;&ensp; 衡量一个人的真正品格，是看他在知道没人看见的时候干些什么。
+        </div>-->
       </div>
+      <video  :style="fixStyle" autoplay loop muted class="fillWidth" v-on:canplay="canplay">
+        <source src="@/assets/video/3.mp4" type="video/mp4" />浏览器不支持 video 标签，建议升级浏览器。
+      </video>
 
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+      <div class="poster hidden" v-if="!vedioCanPlay">
+        <img :style="fixStyle" src="@/assets/back.jpg" alt />
       </div>
-
-    </el-form>
+    </div>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
 export default {
-  name: 'Login',
+  name: "Video",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
-      loginForm: {
-        username: 'admin',
-        password: 'lx1793786487'
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
+      vedioCanPlay: false,
+      fixStyle: "",
+      //   服务的状态
+      status: true,
+      color: "green",
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
+      //跳转的目的地
+      redirect: undefined,
+      //登录表单的数据
+      loginForm: {
+        username: "admin",
+        password: "lx1793786487",
+      },
+      loginFormRole: {
+        //验证账号
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 10, message: "请输入3到10位账号", trigger: "blur" }
+        ],
+        //验证密码
+        password: [
+          { required: true, message: "请输入登录密码", trigger: "blur" },
+          { min: 6, max: 15, message: "请输入6到15位密码", trigger: "blur" }
+        ]
+      }
+    };
   },
-  watch: {
+ 
+ //监听路由的变化
+ watch: {
     $route: {
       handler: function(route) {
         this.redirect = route.query && route.query.redirect
@@ -94,20 +103,19 @@ export default {
       immediate: true
     }
   },
+
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+    canplay() {
+      this.vedioCanPlay = true;
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
+    //点击重置表单
+    resetLoginForm() {
+      this.$refs.loginFormRef.resetFields();
+    },
+    login() {
+      //表单的预验证
+      this.$refs.loginFormRef.validate(valid => {
+        if(valid){
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
@@ -115,123 +123,111 @@ export default {
           }).catch(() => {
             this.loading = false
           })
-        } else {
-          console.log('error submit!!')
+        }else{
           return false
         }
-      })
+      });
+    }
+  },
+  mounted: function() {
+    //屏幕自适应
+    window.onresize = () => {
+      const windowWidth = document.body.clientWidth;
+      const windowHeight = document.body.clientHeight;
+      const windowAspectRatio = windowHeight / windowWidth;
+      let videoWidth;
+      let videoHeight;
+      if (windowAspectRatio < 0.5625) {
+        videoWidth = windowWidth;
+        videoHeight = videoWidth * 0.5625;
+        this.fixStyle = {
+          height: windowWidth * 0.5625 + "px",
+          width: windowWidth + "px",
+          "margin-bottom": (windowHeight - videoHeight) / 2 + "px",
+          "margin-left": "initial"
+        };
+      } else {
+        videoHeight = windowHeight;
+        videoWidth = videoHeight / 0.5625;
+        this.fixStyle = {
+          height: windowHeight + "px",
+          width: windowHeight / 0.5625 + "px",
+          "margin-left": (windowWidth - videoWidth) / 2 + "px",
+          "margin-bottom": "initial"
+        };
+      }
+    };
+    window.onresize();
+  },
+  watch: {
+      //观察属性，更换服务器状态的颜色
+    status(chance) {
+        if(chance){
+         this.color='green';
+        }else{
+         this.color='red';
+        }
     }
   }
-}
+};
 </script>
 
-<style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
+<style scoped>
+.saying {
+  font-size: 30px;
+  color: aliceblue;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.status {
+  font-size: 25px;
+  color: aliceblue;
+}
+.title_style {
+  font-size: 50px;
+  color: aliceblue;
+  font-family: "Courier New", Courier, monospace;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
 
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
+.login_box {
+  width: 400px;
+  height: 300px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
-</style>
-
-<style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
-
-.login-container {
-  min-height: 100%;
+.btns {
   width: 100%;
-  background-color: $bg;
+}
+.homepage-hero-module,
+.video-container {
+  position: relative;
+  height: 100vh;
   overflow: hidden;
+}
 
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+.video-container .poster img {
+  z-index: 0;
+  position: absolute;
+}
 
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+.video-container .filter {
+  z-index: 1;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+}
 
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
-    }
-  }
-
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
-    }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
+.fillWidth {
+  width: 100%;
 }
 </style>

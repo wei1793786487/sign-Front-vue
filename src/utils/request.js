@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken ,setToken} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
   baseURL: 'http://127.0.0.1:8080/', // url = base url + request url
-  withCredentials: true, // send cookies when cross-domain requests
+  // withCredentials: true, // send cookies when cross-domain requests
   timeout: 50000000 // request timeout
 })
 
@@ -18,7 +18,8 @@ service.interceptors.request.use(
       config.headers['Authorization'] = 'Bearer'+getToken()
     }
     return config
-  },
+  },  
+  
   error => {
     // do something with request error
     return Promise.reject(error)
@@ -27,41 +28,39 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
-  response => {
+  async response => {
     const res = response.data
-        
-    // if the custom code is not 20000, it is judged as an error.
+    const config = response.config
+    
+    // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
-      console.log(res.code);
-      
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if(res.code!==1000){
+        Message({
+          message: res.message || 'Error',
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
+      // 2002 账号已经过期 2010 token错误
+      if (res.code === 2002 || res.code === 2010 ) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
+        MessageBox.confirm('你的登录状态已经失效，', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '留在此页',
+          type: 'warning'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
         })
+      }
+      if(res.code===1000){
+        //如果状态是1000 那么刷新token
+        let new_token=res.data;
+        setToken(new_token);
+        config.headers['Authorization'] = 'Bearer'+getToken();
+        const data = await service(config)
+        return data;
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
