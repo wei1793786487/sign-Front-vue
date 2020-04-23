@@ -2,13 +2,15 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import qs from 'qs'
-
+import {getMenu} from '@/utils/menu'
+import { getMenus } from '@/api/user'
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    menus: []//获取菜单信息
   }
 }
 
@@ -29,10 +31,39 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_MENUS: (state, menus) => { //这里是新增的
+    state.menus = menus
   }
 }
 
 const actions = {
+  getMenus({ commit, state }) { //这个是新增的action
+    return new Promise((resolve, reject) => {
+      getMenus(1).then(response => {  //这里的getMenus是调用request方法从服务端获得路由菜单数据的Promise，类似getInfo
+        const { data } = response
+        
+        let menus=[];
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
+        
+        data.forEach(element => {
+          menus.push(getMenu(element))
+        });
+        
+        if (!menus || menus.length <= 0) {
+          reject('getMenus: menus must be a non-null array!')
+        }
+        
+        commit('SET_MENUS', menus)
+        resolve(menus)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
   // user login
   login({ commit }, userInfo) {
     let loginInfo = qs.stringify(userInfo)
