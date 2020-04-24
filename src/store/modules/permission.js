@@ -1,5 +1,9 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import {
+  asyncRoutes,
+  constantRoutes
+} from '@/router'
 import Layout from '@/layout'
+import {routerMap} from '@/utils/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -7,7 +11,7 @@ import Layout from '@/layout'
  * @param route
  */
 function hasPermission(roles, route) {
-  
+
   if (route.meta && route.meta.roles) {
     return roles.some(role => route.meta.roles.includes(role.roleName))
   } else {
@@ -16,20 +20,26 @@ function hasPermission(roles, route) {
 }
 
 //请求的数组转路由
- function dataArrayToRoutes(data) {
+function dataArrayToRoutes(data) {
   const res = []
-  
+
   data.forEach(item => {
-    const tmp = { ...item }
+    const tmp = {
+      ...item
+    }
     // console.log(tmp.children);
-    
+      console.log(tmp);
+      
     if (tmp.component === 'Layout') {
       tmp.component = Layout
+      //最前面的组件必须加/ 这里数据库没有存储
+      tmp.path="/"+tmp.path
     } else {
       let sub_view = tmp.component
       sub_view = sub_view.replace(/^\/*/g, '')
-      console.log(sub_view)
-      tmp.component = () => import(`@/views/icons`)  //这里很重要，把view动态加载进来，而且似乎我只找到这样的写法，用拼接不行，然后 views 后面没有斜杆也不行
+      // "babel-eslint": "8.2.6" 这个版本才行
+      
+      tmp.component = routerMap[sub_view];
     }
     if (tmp.children) {
       tmp.children = dataArrayToRoutes(tmp.children)
@@ -37,6 +47,7 @@ function hasPermission(roles, route) {
     res.push(tmp)
   })
   return res
+
 }
 
 /**
@@ -48,7 +59,9 @@ export function filterAsyncRoutes(routes, roles) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = {
+      ...route
+    }
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, roles)
@@ -73,7 +86,12 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, {roles,menus}) {
+  generateRoutes({
+    commit
+  }, {
+    roles,
+    menus
+  }) {
     return new Promise(resolve => {
       let accessedRoutes
       // if (roles.includes('admin')) {
@@ -84,8 +102,10 @@ const actions = {
       // commit('SET_ROUTES', accessedRoutes)
 
       accessedRoutes = dataArrayToRoutes(menus)
-      
-      accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
+     
+
+
+      // accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
