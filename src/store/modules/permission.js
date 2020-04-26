@@ -22,14 +22,10 @@ function hasPermission(roles, route) {
 //请求的数组转路由
 function dataArrayToRoutes(data) {
   const res = []
-
   data.forEach(item => {
     const tmp = {
       ...item
-    }
-    // console.log(tmp.children);
-      console.log(tmp);
-      
+    }  
     if (tmp.component === 'Layout') {
       tmp.component = Layout
       //最前面的组件必须加/ 这里数据库没有存储
@@ -38,7 +34,6 @@ function dataArrayToRoutes(data) {
       let sub_view = tmp.component
       sub_view = sub_view.replace(/^\/*/g, '')
       // "babel-eslint": "8.2.6" 这个版本才行
-      
       tmp.component = routerMap[sub_view];
     }
     if (tmp.children) {
@@ -46,6 +41,8 @@ function dataArrayToRoutes(data) {
     }
     res.push(tmp)
   })
+  //最后放入404界面 这个404必须是最后！！！
+  res.push({ path: '*', redirect: '/404', hidden: true })
   return res
 
 }
@@ -94,18 +91,10 @@ const actions = {
   }) {
     return new Promise(resolve => {
       let accessedRoutes
-      // if (roles.includes('admin')) {
-      //   accessedRoutes = asyncRoutes || []
-      // } else {
-      //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      // }
-      // commit('SET_ROUTES', accessedRoutes)
-
+ 
       accessedRoutes = dataArrayToRoutes(menus)
-     
 
-
-      // accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
+      accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

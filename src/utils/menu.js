@@ -36,7 +36,6 @@ export function getMeta(data) {
  */
 export function getMenu(element) {
 
-  // console.log(element);
 
   let children = [];
   let hidden = false;

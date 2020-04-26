@@ -46,9 +46,6 @@ router.beforeEach(async(to, from, next) => {
           // dynamically add accessible routes
           
           
-          console.log(accessRoutes);
-
-
           
           router.addRoutes(accessRoutes)
 

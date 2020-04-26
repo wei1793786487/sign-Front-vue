@@ -15,6 +15,7 @@
             :rules="loginFormRole"
             :model="loginForm"
             class="login_form"
+            v-loading.fullscreen.lock="fullscreenLoading"
           >
             <el-form-item prop="username">
               <el-input
@@ -68,10 +69,11 @@ export default {
     return {
       vedioCanPlay: false,
       fixStyle: "",
+      //加载条
+      fullscreenLoading:false,
       //   服务的状态
       status: true,
       color: "green",
-      loading: false,
       //跳转的目的地
       redirect: undefined,
       //登录表单的数据
@@ -116,12 +118,12 @@ export default {
       //表单的预验证
       this.$refs.loginFormRef.validate(valid => {
         if(valid){
-          this.loading = true
+          this.fullscreenLoading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+            this.fullscreenLoading = false
           }).catch(() => {
-            this.loading = false
+            this.fullscreenLoading = false
           })
         }else{
           return false
