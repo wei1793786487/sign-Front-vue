@@ -9,6 +9,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
+    last_time:"",
+    address:"",
     roles: [],
     menus: []//获取菜单信息
   }
@@ -34,6 +36,12 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => { //这里是新增的
     state.menus = menus
+  },
+  SET_ADDRESS: (state, address) => { //这里是新增的
+    state.address = address
+  },
+  SET_TIME: (state, last_time) => { //这里是新增的
+    state.last_time = last_time
   }
 }
 
@@ -87,7 +95,9 @@ const actions = {
         if (!data) {
           reject('校验失败，请重新登录')
         }
-        const { roles, username, avatar } = data
+        console.log(data);
+        
+        const { roles, username, avatar ,lasttime,address} = data
 
         let role =[]        
         // 用户角色必须是arry数组类型
@@ -99,6 +109,8 @@ const actions = {
           role.push(role_item.roleName)
         });
         commit('SET_ROLES', roles)
+        commit('SET_ADDRESS',address)
+        commit('SET_TIME',lasttime)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
         resolve(data)
