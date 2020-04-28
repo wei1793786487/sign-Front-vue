@@ -24,7 +24,7 @@ export function logout() {
 
 export function getMenus(type){
   return request({
-    url: 'http://127.0.0.1:8080/menu/'+type,
+    url: '/menu/'+type,
     method: 'get'
   })
 

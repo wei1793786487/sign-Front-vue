@@ -13,6 +13,11 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import qs from 'qs';
+
+
+
+Vue.prototype.$qs = qs
 
 
 Vue.use(ElementUI)

@@ -16,6 +16,7 @@ service.interceptors.request.use(
     // do something before request is sent
     if (store.getters.token) {
       config.headers['Authorization'] = 'Bearer'+getToken()
+      config.headers['Content-Type']="application/x-www-form-urlencoded"
     }
     return config
   },  
@@ -29,9 +30,10 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   async response => {
+  
+
     const res = response.data
     const config = response.config
-    
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
       if(res.code!==1000){
@@ -62,6 +64,7 @@ service.interceptors.response.use(
         const data = await service(config)
         return data;
       }
+
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
