@@ -1,6 +1,8 @@
 <template>
   <div class="icons-container">
-   
+     <el-card style="margin-bottom: 10px">
+       <div v-text="'<svg-icon icon-class=图表名字></svg-icon>'"/>
+     </el-card>
     <el-tabs type="border-card">
       <el-tab-pane label="Icons">
         <div class="grid">
@@ -46,15 +48,18 @@ export default {
   data() {
     return {
       svgIcons,
-      elementIcons
+      elementIcons,
+     
     }
   },
   methods: {
     generateIconCode(symbol) {
-      return `<svg-icon icon-class="${symbol}" />`
+      // return `<svg-icon icon-class="${symbol}" />`
+      return symbol
     },
     generateElementIconCode(symbol) {
-      return `<i class="el-icon-${symbol}" />`
+      // return `<i class="el-icon-${symbol}" />`
+      return symbol
     },
     handleClipboard(text, event) {
       clipboard(text, event)

@@ -35,8 +35,7 @@ export function getMeta(data) {
  * @param {获取的菜单对象} element 
  */
 export function getMenu(element) {
-
-
+  
   let children = [];
   let hidden = false;
 
@@ -48,11 +47,13 @@ export function getMenu(element) {
   if (element.hidden === 1) {
     hidden = true;
   }
-
   //递归赋值
   if (element.children) {
-     children.push(getMenu(element.children));
+    element.children.forEach(element => {
+      children.push(getMenu(element))
+    });
   }
+
   let menu = {
     'path': element.path,
     'component': element.component,
@@ -62,6 +63,5 @@ export function getMenu(element) {
     'meta': meta,
     'children': children
   }
-
   return menu;
 }

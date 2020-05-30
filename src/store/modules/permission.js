@@ -1,5 +1,4 @@
 import {
-  asyncRoutes,
   constantRoutes
 } from '@/router'
 import Layout from '@/layout'
@@ -32,7 +31,6 @@ function dataArrayToRoutes(data) {
       tmp.path="/"+tmp.path
     } else {
       let sub_view = tmp.component
-      sub_view = sub_view.replace(/^\/*/g, '')
       // "babel-eslint": "8.2.6" 这个版本才行
       tmp.component = routerMap[sub_view];
     }
@@ -44,7 +42,6 @@ function dataArrayToRoutes(data) {
   //最后放入404界面 这个404必须是最后！！！
   res.push({ path: '*', redirect: '/404', hidden: true })
   return res
-
 }
 
 /**
@@ -91,9 +88,9 @@ const actions = {
   }) {
     return new Promise(resolve => {
       let accessedRoutes
- 
+      
       accessedRoutes = dataArrayToRoutes(menus)
-
+           
       accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

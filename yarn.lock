@@ -3715,6 +3715,11 @@ dotenv@^7.0.0:
   resolved "https://registry.npm.taobao.org/dotenv/download/dotenv-7.0.0.tgz#a2be3cd52736673206e8a85fb5210eea29628e7c"
   integrity sha1-or481Sc2ZzIG6KhftSEO6ilijnw=
 
+dropzone@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.npm.taobao.org/dropzone/download/dropzone-5.7.0.tgz?cache=0&sync_timestamp=1581685539402&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdropzone%2Fdownload%2Fdropzone-5.7.0.tgz#8d1007f3ebcc6e6d64096823f854d898f7564ef2"
+  integrity sha1-jRAH8+vMbm1kCWgj+FTYmPdWTvI=
+
 duplexer@^0.1.1:
   version "0.1.1"
   resolved "https://registry.npm.taobao.org/duplexer/download/duplexer-0.1.1.tgz?cache=0&sync_timestamp=1585562750138&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fduplexer%2Fdownload%2Fduplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"

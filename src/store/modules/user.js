@@ -50,18 +50,23 @@ const actions = {
     return new Promise((resolve, reject) => {
       getMenus(1).then(response => {  //这里的getMenus是调用request方法从服务端获得路由菜单数据的Promise，类似getInfo
         const { data } = response
-        
+          
         let menus=[];
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('校验失败，请重新登录')
         }
         
+  
+
         data.forEach(element => {
           menus.push(getMenu(element))
         });
         
+    console.log(menus);
+    
+        
         if (!menus || menus.length <= 0) {
-          reject('getMenus: menus must be a non-null array!')
+          reject('getMenus:菜单不能是一个空数组')
         }
         
         commit('SET_MENUS', menus)

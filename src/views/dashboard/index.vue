@@ -1,14 +1,11 @@
 <template>
   <div class="dashboard-container">
-
     <el-row :gutter="20">
       <!-- 第一行 -->
       <el-col :span="6">
-
         <user-info />
 
         <box-card />
-        
       </el-col>
 
       <!-- 第二行 -->
@@ -17,13 +14,17 @@
         <panel-group />
       </el-col>
 
-       <el-col :span="6" style="margin-bottom:30px;">
+      <el-col :span="6" style="margin-bottom:30px;">
         <todo-list />
       </el-col>
-     
 
+      <el-col :span="12">
+        <el-card>
+          1、天爷爷地奶奶我不知道这里写啥了。<br>
+         
+        </el-card>
+      </el-col>
     </el-row>
-
   </div>
 </template>
 
