@@ -64,7 +64,11 @@ service.interceptors.response.use(
         const data = await service(config)
         return data;
       }
-
+      //如果删除的人员(这个方法里面因为上传人员的异常调用的Dropzone移除文件的方法，没有办法似的Dropzone不调用移除文件的回调函数)
+      // if(response.config.method==="delete"&&response.config.url.indexOf("person") != -1){
+      //  return res
+      // }
+       
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
