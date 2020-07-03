@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '会议签到系统管理端',
 
   /**
    * @type {boolean} true | false

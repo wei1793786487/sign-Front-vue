@@ -29,3 +29,20 @@ export function getMenus(type){
   })
 
 }
+export function getMeta(){
+  return request({
+    url: '/meta',
+    method: 'get'
+  })
+
+}
+
+
+export function addMeta(data){
+  return request({
+    url: '/meta',
+    method: 'post',
+    data
+  })
+
+}
