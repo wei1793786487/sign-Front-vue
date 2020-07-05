@@ -37,6 +37,16 @@ export function getMeta(){
 
 }
 
+export function getRoles(){
+  return request({
+    url: '/role',
+    async:false,
+    method: 'get'
+  })
+
+}
+
+
 
 export function addMeta(data){
   return request({
@@ -46,3 +56,13 @@ export function addMeta(data){
   })
 
 }
+
+export function addMenus(data){
+  return request({
+    url: '/menu',
+    method: 'post',
+    data
+  })
+
+}
+

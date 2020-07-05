@@ -70,13 +70,14 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="lazy(row)">编辑</el-button>
+            <el-button type="primary" size="mini">编辑</el-button>
             <el-button size="mini" type="danger" @click="lazy(row)">删除</el-button>
-            <el-button size="mini" type="info" @click="lazy(row)">绑定角色</el-button>
+            <el-button size="mini" type="info" @click="addRoleHandle(row)">绑定角色</el-button>
           </template>
         </el-table-column>
       </el-table>
       <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getMenusList" /> -->
+      
     </el-card>
 
     <el-dialog title="添加META" :rules="MetaRules" :visible.sync="AddMataVisible" destroy-on-close>
@@ -95,37 +96,52 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="添加菜单" :visible.sync="AddFormVisible" destroy-on-close >
+    <el-dialog title="添加菜单" :rules="menuRules" :visible.sync="AddFormVisible" destroy-on-close>
       <el-form ref="AddMenuForm" :model="MenuForm" label-width="80px">
         <!-- {{MenuForm}} -->
-        <el-form-item label="菜单路径" prop>
+        <el-form-item label="菜单路径" prop="path">
           <el-input v-model="MenuForm.path" placeholder="请输入菜单的路径"></el-input>
         </el-form-item>
 
-        <el-form-item label="顶级组件" prop>
+        <el-form-item label="顶级组件" prop="isTop">
           <el-radio v-model="MenuForm.isTop" label="true">是</el-radio>
           <el-radio v-model="MenuForm.isTop" label="false">否</el-radio>
         </el-form-item>
 
-        <el-form-item label="组件名称" prop>
-          <el-input v-model="MenuForm.component"  :disabled="istopCom" placeholder="请输入组件名称（此组件需要在前端注册）"></el-input>
+        <el-form-item label="组件名称" prop="CompName">
+          <el-input
+            v-model="MenuForm.component"
+            :disabled="istopCom"
+            placeholder="请输入组件名称（此组件需要在前端注册）"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item label="菜单名称" prop>
-          <el-input v-model="MenuForm.name" placeholder="请输入菜单的名称"></el-input>
-        </el-form-item>
-
-
-        <el-form-item label="meta" prop>
+        <el-form-item label="父菜单">
           <el-autocomplete
-            :fetch-suggestions="querySearchAsync"
-            placeholder="请选择meta"
-            @select="handleSelect"
+            readonly
+            :disabled="istopCom"
+            :fetch-suggestions="queryMenuSearchAsync"
+            placeholder="请选择所属父菜单"
+            @select="handleSelectMenu"
             v-model="choseMenu"
           ></el-autocomplete>
         </el-form-item>
 
-        <el-form-item label="是否隐藏">
+        <el-form-item label="菜单名称" prop="menuName">
+          <el-input v-model="MenuForm.name" placeholder="请输入菜单的名称"></el-input>
+        </el-form-item>
+
+        <el-form-item label="meta" prop="meta">
+          <el-autocomplete
+            readonly
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请选择meta"
+            @select="handleSelect"
+            v-model="choseMeta"
+          ></el-autocomplete>
+        </el-form-item>
+
+        <el-form-item label="是否隐藏" prop="ishidden">
           <el-radio-group v-model="MenuForm.hidden">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
@@ -133,15 +149,32 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmitMeta">立即创建</el-button>
+          <el-button  type="primary" @click="onSubmitMenu">立即创建</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
+
+
+
+    <el-dialog title="请选择你要分配的角色" center :visible.sync="AddRoleVisible"  width="30%">
+      <el-checkbox-group v-model="choseRoleList">
+         <el-tooltip v-for="role in RoleList" :key="role.id" class="item" effect="dark" :content="role.describe" placement="top-start">
+          <el-checkbox  :label="role.id" >{{role.roleName}}</el-checkbox>
+        </el-tooltip>
+      </el-checkbox-group>
+          <el-button class="create" type="primary" @click="deSRole">分配</el-button>
+    </el-dialog>
+
+
+
+
   </div>
 </template>
 
 <script>
-import { getMenus, getMeta, addMeta } from "@/api/user";
+import { getMenus, getMeta, addMeta, addMenus, getRoles } from "@/api/user";
+import {findDes,addDes } from "@/api/role";
+
 import waves from "@/directive/waves"; // waves directive
 // import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
@@ -151,23 +184,30 @@ export default {
   data() {
     return {
       menuList: [],
+      choseRoleList: [],
       AddFormVisible: false,
       AddMataVisible: false,
       listLoading: false,
       total: 0,
       choseMenuId: "",
-      father: "",
-      istopCom:false,
+      istopCom: false,
+      AddRoleVisible: false,
       metaList: [],
+      RoleList: [],
+      choseMeta: "",
+      //选择到的菜单
+      meta:'',
       choseMenu: "",
       MenuForm: {
         path: "",
         component: "",
         name: "",
         isTop: "false",
-        meta_id: "",
-        hidden: "0"
+        metaId: "",
+        hidden: "0",
+        parent: ""
       },
+      searchmenuList: "",
       MetaForm: {
         title: "",
         icon: ""
@@ -177,6 +217,21 @@ export default {
         limit: 20,
         title: undefined
       },
+      //菜单规则
+      menuRules: {
+        path: [{ required: true, message: "请输入菜单路径", trigger: "blur" }],
+        isTop: [
+          { required: true, message: "请选择是否为顶级", trigger: "blur" }
+        ],
+        menuName: [
+          { required: true, message: "请输入菜单的名称", trigger: "blur" }
+        ],
+        meta: [{ required: true, message: "请选择meta", trigger: "blur" }],
+        ishidden: [
+          { required: true, message: "请选择是否隐藏", trigger: "blur" }
+        ]
+      },
+
       MetaRules: {
         metaName: [
           { required: true, message: "请输入meta的名称", trigger: "blur" },
@@ -191,14 +246,13 @@ export default {
   watch: {
     "MenuForm.isTop": {
       handler(newName, oldName) {
-        if(newName==='true'){
-          this.istopCom=true;
+        if (newName === "true") {
+          this.istopCom = true;
           this.MenuForm.component = "Layout";
-        }else{
-          this.istopCom=false;
+        } else {
+          this.istopCom = false;
           this.MenuForm.component = "";
         }
-
       },
       deep: true
     }
@@ -210,9 +264,45 @@ export default {
   methods: {
     async getMenusList() {
       const { data } = await getMenus(0);
-      
       this.menuList = data;
+      this.searchmenuList = data;
     },
+
+    addRoleHandle(row) {  
+     this.choseRoleList=[];
+     this.AddRoleVisible=true;
+     this.meta=row.meta.id;
+     this.getRoleList();
+     findDes(row.meta.id).then(res=>{
+          res.data.forEach(element => {
+            this.choseRoleList.push(element.id)
+         }); 
+     })
+
+    },
+   async deSRole(){
+     if(this.choseRoleList.length==0){
+          this.$message({
+          message: '请先选择你要分配的角色',
+          type: 'error'
+        });
+        return;
+     }
+       let res= await addDes(this.$qs.stringify({'mid':this.meta,'rid':this.choseRoleList.toString()}));
+       this.getMenusList();
+       this.AddRoleVisible=false;
+    },
+    queryMenuSearchAsync(search, cb) {
+      this.searchmenuList = this.searchmenuList.map(item => {
+        return {
+          id: item.id,
+          value: item.value || item.meta.title
+        };
+      });
+
+      cb(this.searchmenuList);
+    },
+
     querySearchAsync(search, cb) {
       this.metaList = this.metaList.map(item => {
         return {
@@ -231,8 +321,13 @@ export default {
     handleSelect(item) {
       this.state = item.value;
       this.choseMenuId = item.id;
+      this.MenuForm.metaId = item.id;
     },
-  
+
+    handleSelectMenu(item) {
+      this.MenuForm.parent = item.id;
+    },
+
     createStateFilter(queryString) {
       return state => {
         return (
@@ -240,6 +335,7 @@ export default {
         );
       };
     },
+
     handleFilter() {},
     handleCreate() {
       this.AddFormVisible = true;
@@ -250,10 +346,17 @@ export default {
     handleUpdate(row) {
       console.log(row);
     },
+
     async getMetaList() {
       const { data } = await getMeta();
       this.metaList = data;
     },
+
+    async getRoleList() {
+      const { data } = await getRoles();
+      this.RoleList = data;
+    },
+
     handleDelete() {},
     onSubmitMeta() {
       this.$refs["AddMetaForm"].validate(valid => {
@@ -261,6 +364,22 @@ export default {
           addMeta(this.$qs.stringify(this.MetaForm)).then(res => {
             this.$message("添加成功");
             this.AddMataVisible = false;
+          });
+          console.log(this.MetaForm);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    onSubmitMenu() {
+      this.$refs["AddMenuForm"].validate(valid => {
+        if (valid) {
+          this.menuList.path = "/" + this.menuList.path;
+          addMenus(this.$qs.stringify(this.MenuForm)).then(res => {
+            this.$message("添加成功");
+            this.$refs.AddMenuForm = "";
+            this.AddFormVisible = false;
           });
           console.log(this.MetaForm);
         } else {
@@ -285,5 +404,12 @@ export default {
 }
 .el-button {
   margin-bottom: 10px;
+}
+.create{
+   position: relative;
+   top: 20%;
+   margin-top: 20%;
+
+   left: 38%;
 }
 </style>
