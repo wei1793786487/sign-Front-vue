@@ -93,6 +93,7 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmitMeta">立即创建</el-button>
         </el-form-item>
+        
       </el-form>
     </el-dialog>
 
@@ -263,7 +264,10 @@ export default {
   },
   methods: {
     async getMenusList() {
+      this.listLoading=true;
       const { data } = await getMenus(0);
+      this.listLoading=false;
+
       this.menuList = data;
       this.searchmenuList = data;
     },
@@ -293,6 +297,7 @@ export default {
        this.AddRoleVisible=false;
     },
     queryMenuSearchAsync(search, cb) {
+      this.getMenusList();                               
       this.searchmenuList = this.searchmenuList.map(item => {
         return {
           id: item.id,
@@ -304,6 +309,9 @@ export default {
     },
 
     querySearchAsync(search, cb) {
+
+      this.getMetaList();
+
       this.metaList = this.metaList.map(item => {
         return {
           id: item.id,

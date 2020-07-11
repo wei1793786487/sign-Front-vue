@@ -14,13 +14,17 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import qs from 'qs';
-
+import BaiduMap from 'vue-baidu-map'
 
 
 Vue.prototype.$qs = qs
 
 
 Vue.use(ElementUI)
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: '0H0UoHGaGfLCRaBoXStO5DfbvDO30TOg'
+})
 
 Vue.config.productionTip = false
 

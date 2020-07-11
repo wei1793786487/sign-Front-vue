@@ -8,3 +8,11 @@ export function deleteByUrl(data) {
   })
   }
   
+  export function getPerSionList(params) {
+    return request({
+      url: '/person/',
+      params
+    })
+    }
+    
+  
