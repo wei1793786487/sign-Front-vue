@@ -20,7 +20,7 @@ export default {
     url: {
       type: String,
       required: true
-    },
+    }, 
     clickable: {
       type: Boolean,
       default: true

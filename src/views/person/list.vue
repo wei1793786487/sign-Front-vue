@@ -50,8 +50,8 @@
       </div>
       <el-table
         v-loading="listLoading"
-        :data="list"
-        element-loading-text="正在加载数据"
+        :data="list" 
+        element-loading-text="正在加载数据" 
         border
         fit
         highlight-current-row
