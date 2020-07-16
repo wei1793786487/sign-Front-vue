@@ -50,8 +50,8 @@
       </div>
       <el-table
         v-loading="listLoading"
-        :data="list" 
-        element-loading-text="正在加载数据" 
+        :data="list"
+        element-loading-text="正在加载数据"
         border
         fit
         highlight-current-row
@@ -107,7 +107,13 @@
       />
     </el-card>
 
-    <el-dialog title="人员修改" :visible.sync="dialogVisible" width="30%" :show-close="false">
+    <el-dialog
+      title="人员修改"
+      :rules="rules"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :show-close="false"
+    >
       <el-form ref="AddPersonForm" :model="psersonForm" label-width="80px">
         <el-form-item label="人员姓名" prop="personName">
           <el-input v-model="psersonForm.personName" placeholder="请输入修改的人员姓名"></el-input>
@@ -116,7 +122,7 @@
         <el-form-item label="电话号码" prop="phone">
           <el-input v-model="psersonForm.phone" placeholder="请选择电话号码"></el-input>
         </el-form-item>
-        <el-form-item label="添加时间" prop="phone">
+        <el-form-item label="添加时间" prop="time">
           <el-input v-model="time" disabled></el-input>
         </el-form-item>
 
@@ -130,7 +136,7 @@
 </template>
 
 <script>
-import { getPerSionList } from "@/api/person";
+import { getPerSionList, chancePerson, deletePerson } from "@/api/person";
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
 import { getToken } from "@/utils/auth";
@@ -138,6 +144,19 @@ export default {
   components: { Pagination },
   directives: { waves },
   data() {
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("手机号不能为空"));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+        console.log(reg.test(value));
+        if (reg.test(value)) {
+          callback();
+        } else {
+          return callback(new Error("请输入正确的手机号"));
+        }
+      }
+    };
     return {
       list: null,
       listLoading: true,
@@ -147,11 +166,21 @@ export default {
       visibleCancel: "none",
       dialogVisible: false,
       choseIds: [],
-      psersonForm: {},
+      psersonForm: {
+        id: "",
+        personName: "",
+        phone: ""
+      },
       listQuery: {
         page: 1,
         limit: 15,
         personName: undefined
+      },
+      rules: {
+        personName: [
+          { required: true, message: "请输入人员姓名", trigger: "chance" }
+        ],
+        phone: [{ validator: checkPhone, trigger: "blur" }]
       }
     };
   },
@@ -199,6 +228,19 @@ export default {
       this.dialogVisible = false;
     },
     onSubmit(data) {
+      if (data.psersonForm === "") {
+        this.$message({
+          message: "人员名称不能为空",
+          type: "warning"
+        });
+      }
+      chancePerson(this.psersonForm).then(res => {
+        this.$message({
+          message: "更新成功",
+          type: "success"
+        });
+        this.getList();
+      });
       this.dialogVisible = false;
     },
     setToken() {
@@ -211,12 +253,48 @@ export default {
     },
     chance(row) {
       this.dialogVisible = true;
-      console.log(row);
+      this.psersonForm.personName = row.personName;
+      this.psersonForm.phone = row.phone;
+      this.time = row.addTime;
+      this.psersonForm.id = row.id;
     },
     deleteOne(data) {
-      console.log(data);
+      this.delete({ ids: [data.id] });
     },
-    handleDeleteChose() {},
+    delete(data) {
+      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "删除中",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          deletePerson(
+            this.$qs.stringify(data, { arrayFormat: "repeat" })
+          ).then(res => {
+            this.$message({
+              message: "删除成功",
+              type: "success"
+            });
+            this.getList()
+            loading.close()
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    handleDeleteChose() {
+      this.delete({ids: this.choseIds})
+    },
     handleSelectionChange(data) {
       let choses = [];
       data.forEach(element => {
