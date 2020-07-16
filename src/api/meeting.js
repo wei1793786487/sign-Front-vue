@@ -25,7 +25,15 @@ export function chanceMeeting(data) {
 
 export function getMeetingList(params) {
   return request({
-    url: '/person/',
+    url: '/meeting/',
     params
+  })
+}
+
+export function deleteMeeting(data) {
+  return request({
+    url: '/meeting/',
+    method: 'delete',
+    data
   })
 }

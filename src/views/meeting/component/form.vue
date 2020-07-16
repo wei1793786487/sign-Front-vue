@@ -92,7 +92,7 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
-    }
+    },
   },
   data() {
     var checkPhone = (rule, value, callback) => {
@@ -121,6 +121,7 @@ export default {
         lng: "",
         lat: ""
       },
+      
       rules: {
         meetingName: [
           { required: true, message: "请输入会议名称", trigger: "blur" }
@@ -154,6 +155,8 @@ export default {
         },
         radius: 100
       },
+      //被选择的id
+      id:'',
       addressList: "",
       searchAddressList: "",
       zoom: 17,
@@ -172,8 +175,8 @@ export default {
   },
   created() {
     if (this.isEdit) {
-      const id = this.$route.params && this.$route.params.id;
-      this.fetchData(id);
+      this.id = this.$route.params && this.$route.params.id;
+      this.fetchData();
     }
   },
   methods: {
@@ -194,7 +197,8 @@ export default {
                 message: "修改成功",
                 type: "success"
               });
-            this.fetchData()
+            // this.fetchData()
+            this.$router.go(-1);
             });
           }
         } else {
@@ -202,8 +206,8 @@ export default {
         }
       });
     },
-    fetchData(id) {
-      findById(88).then(res => {
+    fetchData() {
+      findById(this.id).then(res => {
         let data = res.data;
         this.form = data;
       });

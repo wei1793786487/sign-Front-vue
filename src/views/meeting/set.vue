@@ -3,8 +3,8 @@
     <el-card>
       <div class="filter-container">
         <el-input
-          v-model="listQuery.personName"
-          placeholder="请输入人员姓名"
+          v-model="listQuery.meetingName"
+          placeholder="请输入会议姓名"
           style="width: 200px;"
           @keyup.enter.native="getList"
         />
@@ -39,9 +39,35 @@
           <template slot-scope="scope">{{ scope.$index +1 }}</template>
         </el-table-column>
 
+        <el-table-column align="center" label="会议名字">
+          <template slot-scope="{row}">{{row.meetingName}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="会议地点">
+          <template slot-scope="{row}">{{row.addressName}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="会议地址">
+          <template slot-scope="{row}">{{row.meetingAddress}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="开始时间">
+          <template slot-scope="{row}">{{row.startTime}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="结束时间">
+          <template slot-scope="{row}">{{row.endTime}}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="人员数量">
+          <template slot-scope="{row}">{{row.persionNumber}}</template>
+        </el-table-column>
+
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="chance(row)">编辑</el-button>
+            <router-link :to="'/meeting/edit/'+row.id">
+            <el-button type="primary" size="mini" >编辑</el-button>
+            </router-link>
             <el-button size="mini" type="danger" @click="deleteOne(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -50,7 +76,7 @@
       <pagination
         v-show="total>0"
         :total="total"
-        :current-page="15"
+        :current-page="5"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.limit"
         @pagination="getList"
@@ -64,7 +90,7 @@
 <script>
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
-import { getMeetingList } from "@/api/meeting";
+import { getMeetingList,deleteMeeting } from "@/api/meeting";
 export default {
   components: { Pagination },
   directives: { waves },
@@ -73,9 +99,10 @@ export default {
       list: null,
       total: 0,
       dialogVisible: false,
+      choseIds:0,
       listQuery: {
         page: 1,
-        limit: 15,
+        limit: 5,
         meetingName: undefined
       },
       visibleCancel: "none",
@@ -99,16 +126,20 @@ export default {
       this.listLoading = true;
       getMeetingList(this.listQuery)
         .then(res => {
-          console.log(res);
+          this.list = res.data;
+          this.total = res.count;
           this.listLoading = false;
         })
         .catch(res => {
           this.listLoading = false;
         });
     },
-    chance() {},
-    deleteOne() {},
-    handleCreate() {},
+    deleteOne(data) {
+       this.delete({ ids: [data.id] });
+    },
+    handleCreate() {
+      this.$router.push("/meeting/add");
+    },
     delete(data) {
       this.$confirm("此操作将永久删除, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -122,7 +153,7 @@ export default {
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)"
           });
-          deletePerson(
+          deleteMeeting(
             this.$qs.stringify(data, { arrayFormat: "repeat" })
           ).then(res => {
             this.$message({

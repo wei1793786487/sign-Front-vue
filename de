@@ -131,7 +131,9 @@ export default {
         });
     },
     chance(){},
-    deleteOne(){},
+    deleteOne(data) {
+       this.delete({ ids: [data.id] });
+    },
     handleSelectionChange(){}
     handleDeleteChose() {
       this.delete({ids: this.choseIds})
