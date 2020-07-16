@@ -3,9 +3,9 @@
     class="map"
     :style="{ display: isShow }"
     :center="circlePath.center"
-    @click="onclick"
     :scroll-wheel-zoom="true"
     :zoom="zoom"
+    @ready="handler"
   >
     <bm-circle
       :center="circlePath.center"
@@ -37,8 +37,17 @@ export default {
     return {};
   },
   methods: {
-    onclick({ point }) {
-      this.$emit("onclick", point);
+    handler({BMap, map}){
+       let vue=this
+        var geoc = new BMap.Geocoder();
+        map.addEventListener("click",function(e){
+            var pt = e.point;
+            geoc.getLocation(pt,function(rs){
+                var addrComp = rs.addressComponents;
+                vue.$emit("onclick", pt,addrComp);
+            })
+        });
+
     }
   }
 };

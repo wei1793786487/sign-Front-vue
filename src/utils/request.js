@@ -68,7 +68,9 @@ service.interceptors.response.use(
       // if(response.config.method==="delete"&&response.config.url.indexOf("person") != -1){
       //  return res
       // }
-       
+         
+      // console.log(res);
+      
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res

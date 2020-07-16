@@ -4,6 +4,6 @@ export const routerMap = {
   upload :()=>import('@/views/uploadPerson/index'),
   menu_list:()=>import ('@/views/menu/list'),
   plist:()=>import ('@/views/person/list'),
-  meeting_add:()=>import ('@/views/form/meeting_add'),
-  meeting_set:()=>import ('@/views/form/meeting_set')
+  meeting_add:()=>import ('@/views/meeting/meeting_add'),
+  meeting_set:()=>import ('@/views/meeting/meeting_set')
 }

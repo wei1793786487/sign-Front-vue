@@ -304,7 +304,6 @@ export default {
           value: item.value || item.meta.title
         };
       });
-
       cb(this.searchmenuList);
     },
 
