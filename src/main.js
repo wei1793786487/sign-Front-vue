@@ -15,7 +15,9 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import qs from 'qs';
 import BaiduMap from 'vue-baidu-map'
-
+import moment from 'moment'//导入文件
+ 
+Vue.prototype.$moment = moment;//赋值使用
 
 Vue.prototype.$qs = qs
 

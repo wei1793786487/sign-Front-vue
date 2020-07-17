@@ -37,3 +37,19 @@ export function deleteMeeting(data) {
     data
   })
 }
+
+export function addPersonToMeeting(data) {
+  return request({
+    url: '/meeting/person',
+    method: 'post',
+    data
+  })
+}
+
+export function removePersonToMeeting(data) {
+  return request({
+    url: '/meeting/person',
+    method: 'delete',
+    data
+  })
+}

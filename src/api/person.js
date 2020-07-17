@@ -15,6 +15,13 @@ export function getPerSionList(params) {
   })
 }
 
+export function getBelongList(params) {
+  return request({
+    url: 'person/'+params.type+"/"+params.mid,
+  })
+}
+
+
 export function chancePerson(params) {
   return request({
     url: '/person/',
