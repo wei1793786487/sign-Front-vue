@@ -9,7 +9,6 @@
           @keyup.enter.native="getList"
         />
         <el-button v-waves type="success" icon="el-icon-search" @click="getList">搜索</el-button>
-      
         <el-button v-show="isAdmin"
           :style="{ display: visibleCancel }"
           type="danger"

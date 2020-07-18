@@ -17,6 +17,12 @@ import qs from 'qs';
 import BaiduMap from 'vue-baidu-map'
 import moment from 'moment'//导入文件
  
+import echarts from 'echarts'
+
+
+Vue.prototype.$echarts = echarts
+
+
 Vue.prototype.$moment = moment;//赋值使用
 
 Vue.prototype.$qs = qs
