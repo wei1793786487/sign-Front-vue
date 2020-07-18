@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card  >
     <el-autocomplete
       style="width:400px "
       popper-class="my-autocomplete"
@@ -143,6 +143,7 @@ export default {
 .el-divider__text {
   font-size: 20px;
 }
+
 .my-autocomplete {
   li {
     line-height: normal;
