@@ -67,10 +67,27 @@
         @selection-change="handleSelectionChange"
       >
         >
-        <el-table-column type="selection" width="55"></el-table-column>
 
         <el-table-column align="center" label="ID" width="70">
           <template slot-scope="scope">{{ scope.$index +1 }}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="人员姓名" prop="personName" />
+
+         <el-table-column align="center" label="请求方式">
+          <template slot-scope="{row}">
+            <el-tag v-if="row.phone===''" type="warning">未绑定</el-tag>
+            <template v-else>{{row.phone}}</template>
+          </template>
+        </el-table-column>
+
+         <el-table-column align="center" label="签到情况">
+          <template slot-scope="{row}">
+            <el-tag v-if="row.isCheck===0" type="danger">未签到</el-tag>
+            <el-tag v-else-if="row.isCheck===1" type="success">已签到</el-tag>
+            <el-tag v-else >异常</el-tag>
+
+          </template>
         </el-table-column>
 
         <el-table-column label="操作" align="center">
@@ -90,9 +107,10 @@
         @pagination="getList"
       />
 
-      <el-dialog :visible.sync="dialogVisible" width="30%">
+      <el-dialog :visible.sync="dialogVisible" >
         <check :check="check" :unCheck="uncheck" />
       </el-dialog>
+     
     </el-card>
   </div>
 </template>
@@ -147,9 +165,10 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      getCheckPersons(this.choseMeetingId,this.listQuery)
+      getCheckPersons(this.choseMeetingId, this.listQuery)
         .then(res => {
-          console.log(res);
+          this.total = res.count;
+          this.list = res.data;
           this.listLoading = false;
         })
         .catch(res => {
@@ -162,16 +181,16 @@ export default {
     },
     handleSelect(data) {
       this.choseMeetingId = data.id;
-      this.getList()
+      this.getList();
     },
     clearHandle() {
       this.choseMeetingId = null;
     },
     getcheckNumber() {
       getCheckNumber({ mid: this.choseMeetingId }).then(res => {
-        // console.log(res);
+        console.log(res);
         this.check = res.data.checkNumber;
-        this.uncheck - res.data.uncheckNumber;
+        this.uncheck = res.data.uncheckNumber
       });
     },
     delete(data) {
