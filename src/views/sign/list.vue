@@ -29,15 +29,10 @@
           >
             <template slot="prepend">姓名：</template>
           </el-input>
-          <el-select
-            v-model="listQuery.isCheck"
-            @select="checkSelect"
-            style="width: 190px;"
-            placeholder="请选择签到状态"
-          >
+          <el-select v-model="listQuery.isCheck" style="width: 190px;" placeholder="请选择签到状态">
             <el-option label="未签到" value="0"></el-option>
             <el-option label="已签到" value="1"></el-option>
-            <el-option label="全部" value="3" ></el-option>
+            <el-option label="全部" value="3"></el-option>
           </el-select>
 
           <el-button v-waves type="success" icon="el-icon-search" @click="getList">搜索</el-button>
@@ -54,12 +49,6 @@
           icon="el-icon-edit"
           @click="handleCreate"
         >添加</el-button>
-        <el-button
-          v-show="deleteshow"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleDeleteChose"
-        >删除所选</el-button>
 
         <el-button
           v-show="show"
@@ -67,6 +56,14 @@
           icon="el-icon-picture-outline-round"
           @click="handlePic"
         >查看签到图表</el-button>
+
+        <el-button
+          style="margin-left: 10px;"
+          type="success"
+          v-show="isChose"
+          icon="el-icon-bell"
+          @click="handleChanceState"
+        >修改选中人员签到状态</el-button>
       </div>
       <el-table
         v-loading="listLoading"
@@ -77,6 +74,8 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
+        <el-table-column type="selection" width="55"></el-table-column>
+
         <el-table-column align="center" label="ID" width="70">
           <template slot-scope="scope">{{ scope.$index +1 }}</template>
         </el-table-column>
@@ -124,7 +123,11 @@
 <script>
 import check from "@/components/echarts/checkSituation";
 import waves from "@/directive/waves";
-import { getCheckNumber, getCheckPersons } from "@/api/check";
+import {
+  getCheckNumber,
+  getCheckPersons,
+  chanceCheckStatue
+} from "@/api/check";
 import Pagination from "@/components/Pagination";
 import { getMeetingList } from "@/api/meeting";
 export default {
@@ -135,6 +138,7 @@ export default {
       check: 0,
       uncheck: 0,
       list: null,
+      isChose: false,
       show: false,
       deleteshow: false,
       dialogVisible: false,
@@ -161,22 +165,28 @@ export default {
         this.show = false;
       }
     },
-     "listQuery.isCheck": {
+    "listQuery.isCheck": {
       handler(newName, oldName) {
-        if(newName==='3'){
-          this.listQuery.isCheck=undefined
+        if (newName === "3") {
+          this.listQuery.isCheck = undefined;
         }
-        this.getList()
+        this.getList();
       },
       deep: true
+    },
+    choseIds: function(data) {
+      if (data.length > 0) {
+        this.isChose = true;
+      } else {
+        this.isChose = false;
+      }
     }
-
   },
   methods: {
     getList() {
-      if(this.choseMeetingId===null){
-          this.$message.error('请先选择一个会议');
-          return
+      if (this.choseMeetingId === null) {
+        this.$message.error("请先选择一个会议");
+        return;
       }
       this.listLoading = true;
       getCheckPersons(this.choseMeetingId, this.listQuery)
@@ -189,9 +199,26 @@ export default {
           this.listLoading = false;
         });
     },
+    handleChanceState() {
+      this.$confirm("请选择要修改的状态", "签到状态", {
+        confirmButtonText: "已签到",
+        cancelButtonText: "未签到",
+      })
+        .then(() => {
+        this.chanceStateAction(1)
+        })
+        .catch(() => {
+          this.chanceStateAction(0)
+        });
+    },
     handlePic() {
       this.getcheckNumber();
       this.dialogVisible = true;
+    },
+    chanceStateAction(state) {
+      chanceCheckStatue(this.choseMeetingId, state, {ids: this.choseIds},{ arrayFormat: "repeat" }, { indices: false }).then(res => {
+        console.log(res);
+      });
     },
     handleSelect(data) {
       this.choseMeetingId = data.id;
@@ -202,7 +229,6 @@ export default {
     },
     getcheckNumber() {
       getCheckNumber({ mid: this.choseMeetingId }).then(res => {
-        console.log(res);
         this.check = res.data.checkNumber;
         this.uncheck = res.data.uncheckNumber;
       });
@@ -220,7 +246,13 @@ export default {
     handleCreate() {
       this.$router.push("/meeting/mselect");
     },
- 
+    handleSelectionChange(data) {
+      let choses = [];
+      data.forEach(element => {
+        choses.push(element.id);
+      });
+      this.choseIds = choses;
+    }
   }
 };
 </script>
