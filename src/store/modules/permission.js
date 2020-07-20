@@ -88,9 +88,7 @@ const actions = {
   }) {
     return new Promise(resolve => {
       let accessedRoutes
-      
       accessedRoutes = dataArrayToRoutes(menus)
-           
       accessedRoutes = filterAsyncRoutes(accessedRoutes, roles)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

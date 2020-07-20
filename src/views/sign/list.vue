@@ -83,7 +83,7 @@
 
         <el-table-column align="center" label="人员姓名" prop="personName" />
 
-        <el-table-column align="center" label="请求方式">
+        <el-table-column align="center" label="联系方式">
           <template slot-scope="{row}">
             <el-tag v-if="row.phone===''" type="warning">未绑定</el-tag>
             <template v-else>{{row.phone}}</template>
@@ -100,8 +100,7 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="chance(row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="deleteOne(row)">删除</el-button>
+            <el-button type="primary" size="mini" @click="sendMessage(row)">短信通知</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -162,13 +161,6 @@ export default {
         this.show = false;
       }
     },
-    choseIds: function(data) {
-      if (data.length > 1) {
-        this.deleteshow = true;
-      } else {
-        this.deleteshow = false;
-      }
-    },
      "listQuery.isCheck": {
       handler(newName, oldName) {
         if(newName==='3'){
@@ -197,9 +189,6 @@ export default {
           this.listLoading = false;
         });
     },
-    checkSelect() {
-      console.log("改变了");
-    },
     handlePic() {
       this.getcheckNumber();
       this.dialogVisible = true;
@@ -218,41 +207,6 @@ export default {
         this.uncheck = res.data.uncheckNumber;
       });
     },
-    delete(data) {
-      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          const loading = this.$loading({
-            lock: true,
-            text: "删除中",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
-          deletePerson(
-            this.$qs.stringify(data, { arrayFormat: "repeat" })
-          ).then(res => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList();
-            loading.close();
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
-    },
-    chance() {},
-    deleteOne(data) {
-      this.delete({ ids: [data.id] });
-    },
     querySearchAsync(qs, cb) {
       getMeetingList({ meetingName: qs || "" })
         .then(res => {
@@ -263,20 +217,10 @@ export default {
           cb("");
         });
     },
-    handleSelectionChange() {},
     handleCreate() {
       this.$router.push("/meeting/mselect");
     },
-    handleDeleteChose() {
-      this.delete({ ids: this.choseIds });
-    },
-    handleSelectionChange(data) {
-      let choses = [];
-      data.forEach(element => {
-        choses.push(element.id);
-      });
-      this.choseIds = choses;
-    }
+ 
   }
 };
 </script>

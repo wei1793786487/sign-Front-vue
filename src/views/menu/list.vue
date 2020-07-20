@@ -387,8 +387,9 @@ export default {
             this.$message("添加成功");
             this.$refs.AddMenuForm = "";
             this.AddFormVisible = false;
+            this.getMenusList();
           });
-          console.log(this.MetaForm);
+
         } else {
           console.log("error submit!!");
           return false;

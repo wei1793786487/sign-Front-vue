@@ -8,5 +8,8 @@ export const routerMap = {
   edit:()=>import ('@/views/meeting/edit'),
   meeting_mselect:()=>import ('@/views/sign/add'),
   log_set:()=>import ('@/views/log/list'),
-  meeting_sign:()=>import ('@/views/sign/list')
+  meeting_sign:()=>import ('@/views/sign/list'),
+  user_list:()=>import('@/views/user/list'),
+  user_add:()=>import('@/views/user/add'),
+  user_edit:()=>import('@/views/user/edit')
 }
