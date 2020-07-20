@@ -66,3 +66,12 @@ export function addMenus(data){
 
 }
 
+
+export function getUserList(params){
+  return request({
+    url: '/user',
+    params
+  })
+
+}
+
