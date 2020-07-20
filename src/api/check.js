@@ -14,13 +14,13 @@ export function getCheckNumber(params) {
     })
   }
 
-  export function chanceCheckStatue(mid,isCheck,params) {
-    console.log(params);
-    
+  export function chanceCheckStatue(mid,isCheck,ids) {
     return request({
       url: `/check/${isCheck}/${mid}`,
       method: 'put',
-      params
+      params:{
+        ids:ids
+      }
     })
   }
 

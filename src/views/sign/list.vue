@@ -208,7 +208,7 @@ export default {
         this.chanceStateAction(1)
         })
         .catch(() => {
-          this.chanceStateAction(0)
+              this.chanceStateAction(0)
         });
     },
     handlePic() {
@@ -216,8 +216,9 @@ export default {
       this.dialogVisible = true;
     },
     chanceStateAction(state) {
-      chanceCheckStatue(this.choseMeetingId, state, {ids: this.choseIds},{ arrayFormat: "repeat" }, { indices: false }).then(res => {
+      chanceCheckStatue(this.choseMeetingId, state, this.choseIds.join(",")).then(res => {
         console.log(res);
+        this.getList();
       });
     },
     handleSelect(data) {
