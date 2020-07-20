@@ -174,6 +174,7 @@ export default {
         if(newName==='3'){
           this.listQuery.isCheck=undefined
         }
+        this.getList()
       },
       deep: true
     }
