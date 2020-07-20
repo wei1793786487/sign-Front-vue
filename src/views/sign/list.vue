@@ -99,7 +99,7 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="sendMessage(row)">短信通知</el-button>
+            <el-button type="primary"  size="mini" @click="sendMessage(row)">短信通知</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -128,6 +128,7 @@ import {
   getCheckPersons,
   chanceCheckStatue
 } from "@/api/check";
+import { sendOneMassage } from "@/api/message";
 import Pagination from "@/components/Pagination";
 import { getMeetingList } from "@/api/meeting";
 export default {
@@ -199,16 +200,33 @@ export default {
           this.listLoading = false;
         });
     },
+    sendMessage(row) {
+          const loading = this.$loading({
+          lock: true,
+          text: '发送短信中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+      sendOneMassage({ mid: this.choseMeetingId, pid: row.id }).then(res=>{
+         loading.close();
+           this.$message({
+          message: '发送成功',
+          type: 'success'
+        });
+      }).catch(res=>{
+         loading.close();
+      });
+    },
     handleChanceState() {
       this.$confirm("请选择要修改的状态", "签到状态", {
         confirmButtonText: "已签到",
-        cancelButtonText: "未签到",
+        cancelButtonText: "未签到"
       })
         .then(() => {
-        this.chanceStateAction(1)
+          this.chanceStateAction(1);
         })
         .catch(() => {
-              this.chanceStateAction(0)
+          this.chanceStateAction(0);
         });
     },
     handlePic() {
@@ -216,7 +234,11 @@ export default {
       this.dialogVisible = true;
     },
     chanceStateAction(state) {
-      chanceCheckStatue(this.choseMeetingId, state, this.choseIds.join(",")).then(res => {
+      chanceCheckStatue(
+        this.choseMeetingId,
+        state,
+        this.choseIds.join(",")
+      ).then(res => {
         console.log(res);
         this.getList();
       });

@@ -63,12 +63,15 @@
           <template slot-scope="{row}">{{row.persionNumber}}</template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="250">
           <template slot-scope="{row}">
             <router-link :to="'/meeting/edit/'+row.id">
-            <el-button type="primary" size="mini" >编辑</el-button>
+              <el-button type="primary" size="mini">编辑</el-button>
             </router-link>
             <el-button size="mini" type="danger" @click="deleteOne(row)">删除</el-button>
+            <el-tooltip class="item" effect="dark" content="给该会议的所有人员下发短信通知" placement="top">
+              <el-button size="mini" type="warning" @click="sendMessage(row)">短信</el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -90,7 +93,9 @@
 <script>
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
-import { getMeetingList,deleteMeeting } from "@/api/meeting";
+import { getMeetingList, deleteMeeting } from "@/api/meeting";
+import { sendMassage } from "@/api/message";
+
 export default {
   components: { Pagination },
   directives: { waves },
@@ -99,7 +104,7 @@ export default {
       list: null,
       total: 0,
       dialogVisible: false,
-      choseIds:0,
+      choseIds: 0,
       listQuery: {
         page: 1,
         limit: 5,
@@ -135,7 +140,27 @@ export default {
         });
     },
     deleteOne(data) {
-       this.delete({ ids: [data.id] });
+      this.delete({ ids: [data.id] });
+    },
+    sendMessage(row) {
+      const loading = this.$loading({
+        lock: true,
+        text: "发送短信中",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      sendMassage({ mid: row.id })
+        .then(res => {
+          console.log(res);
+          this.$message({
+            message: "发送成功",
+            type: "success"
+          });
+          loading.close();
+        })
+        .catch(res => {
+          loading.close();
+        });
     },
     handleCreate() {
       this.$router.push("/meeting/add");
