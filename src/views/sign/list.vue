@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-row>
-        <el-col :span="10">
+        <el-col :span="8">
           <el-autocomplete
             style="width:400px "
             popper-class="my-autocomplete"
@@ -20,15 +20,26 @@
             </template>
           </el-autocomplete>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="14 " :push="4">
           <el-input
             v-model="listQuery.personName"
             placeholder="请输入人员姓名"
-            style="width: 400px;"
+            style="width: 300px;"
             @keyup.enter.native="getList"
           >
             <template slot="prepend">姓名：</template>
           </el-input>
+          <el-select
+            v-model="listQuery.isCheck"
+            @select="checkSelect"
+            style="width: 190px;"
+            placeholder="请选择签到状态"
+          >
+            <el-option label="未签到" value="0"></el-option>
+            <el-option label="已签到" value="1"></el-option>
+            <el-option label="全部" value="3" ></el-option>
+          </el-select>
+
           <el-button v-waves type="success" icon="el-icon-search" @click="getList">搜索</el-button>
         </el-col>
       </el-row>
@@ -66,27 +77,24 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        >
-
         <el-table-column align="center" label="ID" width="70">
           <template slot-scope="scope">{{ scope.$index +1 }}</template>
         </el-table-column>
 
         <el-table-column align="center" label="人员姓名" prop="personName" />
 
-         <el-table-column align="center" label="请求方式">
+        <el-table-column align="center" label="请求方式">
           <template slot-scope="{row}">
             <el-tag v-if="row.phone===''" type="warning">未绑定</el-tag>
             <template v-else>{{row.phone}}</template>
           </template>
         </el-table-column>
 
-         <el-table-column align="center" label="签到情况">
+        <el-table-column align="center" label="签到情况">
           <template slot-scope="{row}">
             <el-tag v-if="row.isCheck===0" type="danger">未签到</el-tag>
             <el-tag v-else-if="row.isCheck===1" type="success">已签到</el-tag>
-            <el-tag v-else >异常</el-tag>
-
+            <el-tag v-else>异常</el-tag>
           </template>
         </el-table-column>
 
@@ -107,10 +115,9 @@
         @pagination="getList"
       />
 
-      <el-dialog :visible.sync="dialogVisible" >
+      <el-dialog :visible.sync="dialogVisible">
         <check :check="check" :unCheck="uncheck" />
       </el-dialog>
-     
     </el-card>
   </div>
 </template>
@@ -141,7 +148,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 15,
-        meetingName: undefined
+        meetingName: undefined,
+        isCheck: undefined
       }
     };
   },
@@ -160,10 +168,23 @@ export default {
       } else {
         this.deleteshow = false;
       }
+    },
+     "listQuery.isCheck": {
+      handler(newName, oldName) {
+        if(newName==='3'){
+          this.listQuery.isCheck=undefined
+        }
+      },
+      deep: true
     }
+
   },
   methods: {
     getList() {
+      if(this.choseMeetingId===null){
+          this.$message.error('请先选择一个会议');
+          return
+      }
       this.listLoading = true;
       getCheckPersons(this.choseMeetingId, this.listQuery)
         .then(res => {
@@ -174,6 +195,9 @@ export default {
         .catch(res => {
           this.listLoading = false;
         });
+    },
+    checkSelect() {
+      console.log("改变了");
     },
     handlePic() {
       this.getcheckNumber();
@@ -190,7 +214,7 @@ export default {
       getCheckNumber({ mid: this.choseMeetingId }).then(res => {
         console.log(res);
         this.check = res.data.checkNumber;
-        this.uncheck = res.data.uncheckNumber
+        this.uncheck = res.data.uncheckNumber;
       });
     },
     delete(data) {
