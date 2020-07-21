@@ -11,5 +11,9 @@ export const routerMap = {
   meeting_sign:()=>import ('@/views/sign/list'),
   user_list:()=>import('@/views/user/list'),
   user_add:()=>import('@/views/user/add'),
-  user_edit:()=>import('@/views/user/edit')
+  user_edit:()=>import('@/views/user/edit'),
+  role_list:()=>import ('@/views/role/list'),
+  role_add:()=>import ('@/views/role/add'),
+  role_edit:()=>import ('@/views/role/edit')
+
 }
