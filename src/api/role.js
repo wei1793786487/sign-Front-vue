@@ -44,10 +44,11 @@ export function deleteRole(data) {
 
 
 
-export function chanceRole(params) {
+export function chanceRole(data) {
   return request({
     url: '/role/',
     method: 'put',
+    data
   })
 }
 

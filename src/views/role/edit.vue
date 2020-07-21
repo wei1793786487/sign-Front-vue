@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import meetingform from './component/form'
+import roleform from './component/form'
 
 export default {
    name: 'CreateRole',
