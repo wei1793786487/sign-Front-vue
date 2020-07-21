@@ -75,3 +75,37 @@ export function getUserList(params){
 
 }
 
+
+export function updatedState(userId,state){
+  return request({
+    url: `/user/${userId}/${state}`,
+    method: 'put',
+  })
+
+}
+
+export function addUser(data){
+  return request({
+    url: '/user',
+    method: 'post',
+    data
+  })
+}
+
+
+export function chanceUser(data){
+  return request({
+    url: '/user',
+    method: 'put',
+    data
+  })
+}
+
+
+
+export function getUserById(id) {
+  return request({
+    url: '/user/find/'+id,
+    method: 'get',
+  })
+}

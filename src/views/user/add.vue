@@ -1,12 +1,13 @@
 <template>
-  <el-card>
-dsdsd
-  </el-card>
+    <userform :is-edit="false" />
 </template>
 
 <script>
-export default {
+import userform from './component/form'
 
+export default {
+   name: 'CreateUser',
+   components: { userform }
 }
 </script>
 

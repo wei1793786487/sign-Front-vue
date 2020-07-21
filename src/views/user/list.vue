@@ -3,8 +3,8 @@
     <el-card>
       <div class="filter-container">
         <el-input
-          v-model="listQuery.personName"
-          placeholder="请输入人员姓名"
+          v-model="listQuery.search"
+          placeholder="请输入要搜索的信息"
           style="width: 200px;"
           @keyup.enter.native="getList"
         />
@@ -15,18 +15,11 @@
           icon="el-icon-edit"
           @click="handleCreate"
         >添加</el-button>
-        <el-button
-          :style="{ display: visibleCancel }"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleDeleteChose"
-        >删除所选</el-button>
-
       </div>
       <el-table
         v-loading="listLoading"
-        :data="list" 
-        element-loading-text="正在加载数据" 
+        :data="list"
+        element-loading-text="正在加载数据"
         border
         fit
         highlight-current-row
@@ -38,14 +31,65 @@
         <el-table-column align="center" label="ID" width="70">
           <template slot-scope="scope">{{ scope.$index +1 }}</template>
         </el-table-column>
-   
-     <el-table-column  align="center" label="所属用户" prop="user" />
 
-          
+        <el-table-column align="center" label="账号名称" prop="username" />
+
+        <el-table-column align="center" label="账号性别">
+          <template slot-scope="{row}">
+            <el-tag v-if="row.sex==='男'" type="primary">男</el-tag>
+            <el-tag v-else-if="row.sex==='女'" type="danger">女</el-tag>
+            <el-tag v-else type="info">变态</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="联系电话">
+          <template slot-scope="{row}">
+            <div v-if="row.phone!==null">{{row.phone}}</div>
+            <div v-else>未绑定</div>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="上次登录地点">
+          <template slot-scope="{row}">
+            <div v-if="row.address!==null">{{row.address}}</div>
+            <div v-else>未登录</div>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="上次登录时间">
+          <template slot-scope="{row}">
+            <div v-if="row.lasttime!==null">{{row.lasttime}}</div>
+            <div v-else>未登录</div>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="角色">
+          <template slot-scope="{row}">
+            <el-tag type="danger" v-if="row.roles.length===0">未绑定</el-tag>
+            <el-tag v-else v-for="  role in row.roles" :key="role.id">{{role.roleName}}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="是否可用">
+          <template slot-scope="{row}">
+            <el-switch
+              v-model="row.isenabled"
+              :active-value="0"
+              @change="isenabledChance(row)"
+              :inactive-value="1"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            ></el-switch>
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作" align="center">
           <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="chance(row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="deleteOne(row)">删除</el-button>
+
+         <router-link :to="'/user/edit/'+row.id">
+              <el-button type="primary" size="mini">编辑</el-button>
+            </router-link>
+
           </template>
         </el-table-column>
       </el-table>
@@ -59,89 +103,63 @@
         @pagination="getList"
       />
     </el-card>
-
-    
   </div>
 </template>
 
 <script>
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
-import { getUserList} from "@/api/user"
+import { getUserList, updatedState } from "@/api/user";
 export default {
   components: { Pagination },
   directives: { waves },
   data() {
     return {
       list: null,
-      total:0,
-      visibleCancel:'',
+      total: 0,
+      visibleCancel: "",
       listQuery: {
         page: 1,
         limit: 15,
-        meetingName: undefined
+        search: undefined
       }
     };
   },
   created() {
     this.getList();
   },
-  watch: {
-   
-  },
+  watch: {},
   methods: {
     getList() {
-    this.listLoading = true;
-    getUserList(this.listQuery).then(res=>{
-         console.log(res);
-          this.total=res.count
-          this.list=res.data
+      this.listLoading = true;
+      getUserList(this.listQuery)
+        .then(res => {
+          console.log(res);
+          this.total = res.count;
+          this.list = res.data;
           this.listLoading = false;
-    }).catch(res=>{
-          this.listLoading = false;
-    })
-    },
-     delete(data) {
-      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          const loading = this.$loading({
-            lock: true,
-            text: "删除中",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
-          deletePerson(
-            this.$qs.stringify(data, { arrayFormat: "repeat" })
-          ).then(res => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList()
-            loading.close()
-          });
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+        .catch(res => {
+          this.listLoading = false;
         });
     },
-    chance(){},
-    deleteOne(data) {
-       this.delete({ ids: [data.id] });
+    isenabledChance(row) {
+      let isSuper = false;
+      row.roles.forEach(element => {
+        if (element.roleName === "ADMIN") {
+          this.$message.error("账号管理员不可修改状态");
+          isSuper = true;
+        }
+      });
+      if (isSuper) {
+        row.isenabled = 0;
+        return;
+      } else {
+        updatedState(row.id, row.isenabled);
+      }
     },
-    handleSelectionChange(){},
-    handleCreate(){
-
-    },
-    handleDeleteChose() {
-      this.delete({ids: this.choseIds})
+    handleCreate() {
+        this.$router.push("/user/add");
     },
     handleSelectionChange(data) {
       let choses = [];
@@ -160,5 +178,4 @@ export default {
 .filter-container {
   margin-bottom: 20px;
 }
-
 </style>
