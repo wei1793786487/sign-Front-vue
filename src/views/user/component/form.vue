@@ -38,10 +38,8 @@
 </template>
 
 <script>
-import baiduMap from "@/components/BaiduMap";
 import { addUser, chanceUser, getUserById } from "@/api/user";
 export default {
-  components: { baiduMap },
   props: {
     isEdit: {
       type: Boolean,
@@ -139,6 +137,9 @@ export default {
           });
         }
       });
+      setTimeout(() => {
+        this.isDisable = false;
+      }, 5000);
     },
     fetchData() {
       getUserById(this.id).then(res => {

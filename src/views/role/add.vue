@@ -1,10 +1,13 @@
 <template>
-  
+    <roleform :is-edit="false" />
 </template>
 
 <script>
-export default {
+import meetingform from './component/form'
 
+export default {
+   name: 'CreateRole',
+   components: { roleform }
 }
 </script>
 

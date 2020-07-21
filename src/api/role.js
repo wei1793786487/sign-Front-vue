@@ -54,7 +54,7 @@ export function chanceRole(params) {
 
 export function addRole(data) {
   return request({
-    url: '/addRole',
+    url: '/role',
     method: 'post',
     data
   })
