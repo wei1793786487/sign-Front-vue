@@ -2,7 +2,7 @@
  <el-card shadow="hover" class="mgb20" style="height:270px;">
           <div class="user-info">
             <img :src="avatar" class="user-avator" alt />
-            <div class="user-info-cont">
+            <div class="user-info-cont" style="padding-left: 30px">
               <div>{{name}}</div>
               <div v-for="role in roles" :key="role.id">
                 {{ role.describe }}
@@ -52,6 +52,7 @@ export default {
   float: left;
 }
 .user-info-list {
+  padding-left: 10px;
   font-size: 14px;
   color: #999;
   line-height: 25px;

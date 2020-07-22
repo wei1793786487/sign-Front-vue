@@ -3,7 +3,7 @@
     <div class="video-container">
       <div :style="fixStyle" class="filter">
         <div class="title_style">
-          <strong>签到系统管理登录界面</strong>
+          <strong>签到管理系统登录界面</strong>
         </div>
 
         <!-- 登录开始 -->

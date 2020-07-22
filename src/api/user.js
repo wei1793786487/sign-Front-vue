@@ -15,9 +15,18 @@ export function getInfo() {
   })
 }
 
+
+export function chancePassword(data) {
+  return request({
+    url: '/user/password',
+    method: 'put',
+    data
+  })
+}
+
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
+    url: "logout",
     method: 'post'
   })
 }

@@ -83,13 +83,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="200">
           <template slot-scope="{row}">
-
-         <router-link :to="'/user/edit/'+row.id">
+            <router-link :to="'/user/edit/'+row.id">
               <el-button type="primary" size="mini">编辑</el-button>
             </router-link>
-
+            <el-button size="mini" waves type="info" @click="addRoleHandle(row)">绑定角色</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -102,6 +101,22 @@
         :limit.sync="listQuery.limit"
         @pagination="getList"
       />
+
+      <el-dialog title="请选择你要分配的角色" center :visible.sync="AddRoleVisible" width="30%">
+        <el-checkbox-group v-model="choseRoleList">
+          <el-tooltip
+            v-for="role in RoleList"
+            :key="role.id"
+            class="item"
+            effect="dark"
+            :content="role.describe"
+            placement="top-start"
+          >
+            <el-checkbox :label="role.id">{{role.roleName}}</el-checkbox>
+          </el-tooltip>
+        </el-checkbox-group>
+        <el-button class="create" type="primary" @click="deSRole">分配</el-button>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -109,15 +124,20 @@
 <script>
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
-import { getUserList, updatedState } from "@/api/user";
+import { getUserList, updatedState, getRoles } from "@/api/user";
+import{addUserDes} from "@/api/role"
 export default {
   components: { Pagination },
   directives: { waves },
   data() {
     return {
       list: null,
+      choseRoleList: [],
       total: 0,
+      choseUid:'',
       visibleCancel: "",
+      RoleList: [],
+      AddRoleVisible: false,
       listQuery: {
         page: 1,
         limit: 15,
@@ -143,6 +163,20 @@ export default {
           this.listLoading = false;
         });
     },
+    async addRoleHandle(row) {
+      this.choseUid=row.id
+      let roleIds = [];
+      row.roles.forEach(element => [roleIds.push(element.id)]);
+      this.choseRoleList=roleIds
+      const { data } = await getRoles();
+      this.RoleList = data;
+      this.AddRoleVisible = true;
+    },
+  async deSRole() {
+       let res= await addUserDes(this.$qs.stringify({'uid':this.choseUid,'rid':this.choseRoleList.toString()}));
+       this.AddRoleVisible=false;
+       this.getList()
+    },
     isenabledChance(row) {
       let isSuper = false;
       row.roles.forEach(element => {
@@ -159,7 +193,7 @@ export default {
       }
     },
     handleCreate() {
-        this.$router.push("/user/add");
+      this.$router.push("/user/add");
     },
     handleSelectionChange(data) {
       let choses = [];
@@ -177,5 +211,11 @@ export default {
 <style  scoped>
 .filter-container {
   margin-bottom: 20px;
+}
+.create {
+  position: relative;
+  top: 20%;
+  margin-top: 20%;
+  left: 38%;
 }
 </style>

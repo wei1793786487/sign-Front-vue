@@ -9,11 +9,20 @@ export function findDes(mid) {
 
 export function addDes(data) {
   return request({
-    url: '/role/des' ,
+    url: '/role/meta/des' ,
     method: 'post',
     data
   })
 }
+
+export function addUserDes(data) {
+  return request({
+    url: '/role/user/des' ,
+    method: 'post',
+    data
+  })
+}
+
 
 
 

@@ -308,9 +308,7 @@ export default {
     },
 
     querySearchAsync(search, cb) {
-
       this.getMetaList();
-
       this.metaList = this.metaList.map(item => {
         return {
           id: item.id,
@@ -417,7 +415,6 @@ export default {
    position: relative;
    top: 20%;
    margin-top: 20%;
-
    left: 38%;
 }
 </style>
