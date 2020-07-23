@@ -68,12 +68,26 @@
           <template slot-scope="{row}">{{row.personName}}</template>
         </el-table-column>
 
+
+          <el-table-column align="center" label="添加类型">
+          <template slot-scope="{row}">
+            <el-tag v-if="row.bandType===0">管理员添加</el-tag>
+         
+           <el-tag v-else-if="row.bandType===1" type="success">小程序添加</el-tag>
+ 
+           <el-tag v-else type="danger">未知类型</el-tag>
+
+          </template>
+        </el-table-column>
+
+
         <el-table-column align="center" label="联系方式">
           <template slot-scope="{row}">
             <el-tag v-if="row.phone===''" type="danger">未绑定</el-tag>
             <template v-else>{{row.phone}}</template>
           </template>
         </el-table-column>
+
 
         <el-table-column align="center" label="用户图像">
           <template slot-scope="{row}">
