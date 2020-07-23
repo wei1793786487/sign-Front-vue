@@ -91,7 +91,8 @@
 
         <el-table-column align="center" label="用户图像">
           <template slot-scope="{row}">
-            <el-image
+          <el-tag v-if="row.url==''" type="danger">未上传人脸</el-tag>
+            <el-image v-else
               style="width: 100px; height: 100px"
               :src="'http://www.hqgml.com/'+row.url"
               :preview-src-list="['http://www.hqgml.com/'+row.url]"
