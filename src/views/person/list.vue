@@ -83,7 +83,7 @@
 
         <el-table-column align="center" label="联系方式">
           <template slot-scope="{row}">
-            <el-tag v-if="row.phone===''" type="danger">未绑定</el-tag>
+            <el-tag v-if="row.phone===''||row.phone===null" type="danger">未绑定</el-tag>
             <template v-else>{{row.phone}}</template>
           </template>
         </el-table-column>

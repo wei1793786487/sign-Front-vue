@@ -14,5 +14,6 @@ export const routerMap = {
   user_edit:()=>import('@/views/user/edit'),
   role_list:()=>import ('@/views/role/list'),
   role_add:()=>import ('@/views/role/add'),
-  role_edit:()=>import('@/views/role/edit')
+  role_edit:()=>import('@/views/role/edit'),
+  vx_list:()=>import ('@/views/vx/list')
 }
