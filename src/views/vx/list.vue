@@ -1,11 +1,13 @@
 <template>
   <div class="padd20">
-    <mapselect :mapcenter="centerLatLng" :oldmarker="oldMarker" @mapclick="pointChange"></mapselect>
+    <mapselect :mapcenter="centerLatLng" 
+    @geocoder="geocoder"
+    :oldmarker="oldMarker" @mapclick="pointChange"></mapselect>
   </div>
 </template>
 
 <script>
-import mapselect from "@/components/selectPoint";
+import mapselect from "@/components/qqMap";
 export default {
   components: { mapselect },
   data() {
@@ -22,6 +24,9 @@ export default {
     pointChange(ev) {
       console.log("捕获到点击坐标", ev);
     },
+    geocoder(ev){
+    console.log(ev);
+    }
   },
 };
 </script>

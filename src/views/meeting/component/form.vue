@@ -76,18 +76,20 @@
         </el-autocomplete>
         <br />
         <br />
-        <baiduMap :circlePath="circlePath" :zoom="zoom" :isShow="isShow" @onclick="onclick"></baiduMap>
-      </el-dialog>
+        <!-- <baiduMap :circlePath="circlePath" :zoom="zoom" :isShow="isShow" @onclick="onclick"></baiduMap> -->
+      <baidumap :mapcenter="centerLatLng" :oldmarker="oldMarker" @mapclick="pointChange"/>
+       </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
-import baiduMap from "@/components/BaiduMap";
+// import baiduMap from "@/components/BaiduMap";
+import qqMap from "@/components/qqMap";
 import { findAddress } from "@/api/address";
 import { addMeeting, findById, chanceMeeting } from "@/api/meeting";
 export default {
-  components: { baiduMap },
+  components: { qqMap },
   props: {
     isEdit: {
       type: Boolean,
@@ -110,6 +112,8 @@ export default {
     };
 
     return {
+      centerLatLng: "35.469513,119.546547",
+      oldMarker: "35.469513,119.546547",
       form: {
         meetingName: "",
         meetingAddress: "",

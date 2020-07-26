@@ -62,7 +62,6 @@ export default {
       //添加标签到dom
       document.body.appendChild(script);
     },
-
     createMap() {
       let that = this;
       this.qqmap = new qq.maps.Map(document.getElementById("qqmapCont"), {
@@ -141,9 +140,16 @@ export default {
           radius: 100,
           map: that.qqmap,
         });
-       
+        that.geocoder(event.latLng)
       });
     },
+     geocoder(latLng){
+        geocoder = new qq.maps.Geocoder();
+        geocoder.getAddress(latLng);
+        geocoder.setComplete(res=>{
+           this.$emit("geocoder", res);
+        })
+     }
   },
 };
 </script>
