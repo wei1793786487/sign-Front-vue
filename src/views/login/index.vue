@@ -121,10 +121,7 @@ export default {
           this.fullscreenLoading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
-            this.fullscreenLoading = false
-          }).catch(() => {
-            this.fullscreenLoading = false
-          })
+          }).catch(() => {fullscreenLoading          })
         }else{
           return false
         }

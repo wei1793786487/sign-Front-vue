@@ -20,6 +20,7 @@ import moment from 'moment'//导入文件
 import echarts from 'echarts'
 
 
+
 Vue.prototype.$echarts = echarts
 
 
