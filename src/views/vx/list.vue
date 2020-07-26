@@ -1,43 +1,30 @@
 <template>
- 
- <div id="container" style="width:100%; height:300px"></div>
-
+  <div class="padd20">
+    <mapselect :mapcenter="centerLatLng" :oldmarker="oldMarker" @mapclick="pointChange"></mapselect>
+  </div>
 </template>
 
 <script>
-import maps from "qqmap"
+import mapselect from "@/components/selectPoint";
 export default {
-
-  created() {
-    this.init()
+  components: { mapselect },
+  data() {
+    return {
+      pointName: "日照",
+      qqmap: null,
+      centerLatLng: "35.469513,119.546547",
+      oldMarker: "35.469513,119.546547",
+      newMarker: null,
+    };
   },
+  mounted() {},
   methods: {
-   init() {
-     var that = this;
-     maps.init("N4NBZ-5IFWK-NH7JH-AK7LS-77W77-LMBVI", () => {
-       var myLatlng = new qq.maps.LatLng(22.547931568083015, 114.1306221485138);
-       var myOptions = {
-         zoom: 16,
-         center: myLatlng,
-         mapTypeId: qq.maps.MapTypeId.ROADMAP
-       };
-       that.map = new qq.maps.Map(
-         document.getElementById("container"),
-         myOptions
-       );
-       //获取点击后的地址
-       qq.maps.event.addListener(that.map, "click", function(event) {
-        //  // 获取点击后的地图坐标
-        //  that.shopInfo.lng = event.latLng.getLng();
-        //  that.shopInfo.lat = event.latLng.getLat();
-       });
- 
-     });
-   },
-}
-}
+    pointChange(ev) {
+      console.log("捕获到点击坐标", ev);
+    },
+  },
+};
 </script>
 
 <style>
-
 </style>
