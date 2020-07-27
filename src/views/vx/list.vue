@@ -1,35 +1,118 @@
 <template>
-  <div class="padd20">
-    <mapselect :mapcenter="centerLatLng" 
-    @geocoder="geocoder"
-    :oldmarker="oldMarker" @mapclick="pointChange"></mapselect>
+  <div class="app-container">
+    <el-card>
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="正在加载数据"
+        border
+        fit
+        highlight-current-row
+      >
+        >
+        <el-table-column type="selection" width="55"></el-table-column>
+
+        <el-table-column align="center" label="ID" width="70">
+          <template slot-scope="scope">{{ scope.$index +1 }}</template>
+        </el-table-column>
+
+        <el-table-column align="center" label="小程序用户id" prop="openid" />
+
+        <el-table-column align="center" label="绑定人员">
+          <template slot-scope="{row}">
+            <template v-if="row.persons===null">未绑定用户</template>
+            <template v-else>{{row.persons.personName}}</template>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="上次登录时间" prop="createTime" />
+
+        <el-table-column align="center" label="创建时间" prop="lastTime" />
+
+        <el-table-column label="操作" align="center">
+          <template slot-scope="{row}">
+            <el-button type="primary" size="mini" @click="chance(row)">解绑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :current-page="15"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        @pagination="getList"
+      />
+    </el-card>
   </div>
 </template>
 
 <script>
-import mapselect from "@/components/qqMap";
+import waves from "@/directive/waves";
+import Pagination from "@/components/Pagination";
+import { getVxUserList, unband } from "@/api/vxUser";
 export default {
-  components: { mapselect },
+  components: { Pagination },
+  directives: { waves },
   data() {
     return {
-      pointName: "日照",
-      qqmap: null,
-      centerLatLng: "35.469513,119.546547",
-      oldMarker: "35.469513,119.546547",
-      newMarker: null,
+      list: null,
+      total: 0,
+      visibleCancel: "",
+      listQuery: {
+        page: 1,
+        limit: 15,
+      },
     };
   },
-  mounted() {},
+  created() {
+    this.getList();
+  },
+  watch: {},
   methods: {
-    pointChange(ev) {
-      console.log("捕获到点击坐标", ev);
+    getList() {
+      this.listLoading = true;
+      getVxUserList(this.listQuery)
+        .then((res) => {
+          console.log(res);
+          this.total = res.count;
+          this.list = res.data;
+          this.listLoading = false;
+        })
+        .catch((res) => {
+          this.listLoading = false;
+        });
     },
-    geocoder(ev){
-    console.log(ev);
+    chance(row) {
+      if(row.persons===null){
+        this.$message.error("该用户没绑定人员")
+        return
+      }
+    this.$confirm('是否删除该用户绑定的人员', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '不删',
+          type: 'warning'
+        }).then(() => {
+           unband(row.openid,"1")
+        }).catch(() => {
+           unband(row.openid,"0") 
+        });
+    },
+    unband(id,type){
+       unband(id,type).then((res) => {
+        console.log(res);
+        this.getList()
+      });
     }
   },
 };
 </script>
 
-<style>
+
+
+<style  scoped>
+.filter-container {
+  margin-bottom: 20px;
+}
 </style>
