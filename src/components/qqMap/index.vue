@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mapWrap">
-      <div class="qqmap" id="qqmapCont"></div>
+      <div class="qqmap" id="qqmapCont" v-show="show"></div>
     </div>
   </div>
 </template>
@@ -16,6 +16,10 @@ export default {
     oldmarker: {
       type: String,
       default: "35.469513,119.546547",
+    },
+      show: {
+      type: Boolean,
+      default:true,
     },
   },
   data: function () {
@@ -48,6 +52,7 @@ export default {
         console.log(typeof newVal);
         this.latlngCurrent = newVal;
         this.qqmap && this.createMarker();
+        this.createCircle()
       }
     },
   },
@@ -78,7 +83,7 @@ export default {
       }, 500);
     },
     createCircle(){
-    let that = this;
+     let that = this;
      if (that.cirle) {
         that.cirle.setMap(null);
       }
@@ -97,7 +102,7 @@ export default {
         that.premarker.setMap(null);
       }
       if (this.oldmarker) {
-        console.log("编辑模式：", this.oldmarker);
+        // console.log("编辑模式：", this.oldmarker);
         that.qqmap.setCenter(
           new qq.maps.LatLng(
             that.oldmarker.split(",")[0],

@@ -18,10 +18,7 @@
             v-loading.fullscreen.lock="fullscreenLoading"
           >
             <el-form-item prop="username">
-              <el-input
-                v-model="loginForm.username"
-                prefix-icon="el-icon-user-solid"
-              ></el-input>
+              <el-input v-model="loginForm.username" prefix-icon="el-icon-user-solid"></el-input>
             </el-form-item>
             <!-- 密码 -->
             <el-form-item prop="password">
@@ -51,7 +48,7 @@
          &ensp;&ensp; 衡量一个人的真正品格，是看他在知道没人看见的时候干些什么。
         </div>-->
       </div>
-      <video  :style="fixStyle" autoplay loop muted class="fillWidth" v-on:canplay="canplay">
+      <video :style="fixStyle" autoplay loop muted class="fillWidth" v-on:canplay="canplay">
         <source src="@/assets/video/3.mp4" type="video/mp4" />浏览器不支持 video 标签，建议升级浏览器。
       </video>
 
@@ -70,7 +67,7 @@ export default {
       vedioCanPlay: false,
       fixStyle: "",
       //加载条
-      fullscreenLoading:false,
+      fullscreenLoading: false,
       //   服务的状态
       status: true,
       color: "green",
@@ -85,25 +82,25 @@ export default {
         //验证账号
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 10, message: "请输入3到10位账号", trigger: "blur" }
+          { min: 3, max: 10, message: "请输入3到10位账号", trigger: "blur" },
         ],
         //验证密码
         password: [
           { required: true, message: "请输入登录密码", trigger: "blur" },
-          { min: 6, max: 15, message: "请输入6到15位密码", trigger: "blur" }
-        ]
-      }
+          { min: 6, max: 15, message: "请输入6到15位密码", trigger: "blur" },
+        ],
+      },
     };
   },
- 
- //监听路由的变化
- watch: {
+
+  //监听路由的变化
+  watch: {
     $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+      handler: function (route) {
+        this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
 
   methods: {
@@ -116,19 +113,24 @@ export default {
     },
     login() {
       //表单的预验证
-      this.$refs.loginFormRef.validate(valid => {
-        if(valid){
-          this.fullscreenLoading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {fullscreenLoading          })
-        }else{
-          return false
+      this.$refs.loginFormRef.validate((valid) => {
+        if (valid) {
+          this.fullscreenLoading = true;
+          this.$store
+            .dispatch("user/login", this.loginForm)
+            .then(() => {
+              this.$router.push({ path: this.redirect || "/" });
+            })
+            .catch(() => {
+              fullscreenLoading = false;
+            });
+        } else {
+          return false;
         }
       });
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     //屏幕自适应
     window.onresize = () => {
       const windowWidth = document.body.clientWidth;
@@ -143,7 +145,7 @@ export default {
           height: windowWidth * 0.5625 + "px",
           width: windowWidth + "px",
           "margin-bottom": (windowHeight - videoHeight) / 2 + "px",
-          "margin-left": "initial"
+          "margin-left": "initial",
         };
       } else {
         videoHeight = windowHeight;
@@ -152,22 +154,22 @@ export default {
           height: windowHeight + "px",
           width: windowHeight / 0.5625 + "px",
           "margin-left": (windowWidth - videoWidth) / 2 + "px",
-          "margin-bottom": "initial"
+          "margin-bottom": "initial",
         };
       }
     };
     window.onresize();
   },
   watch: {
-      //观察属性，更换服务器状态的颜色
+    //观察属性，更换服务器状态的颜色
     status(chance) {
-        if(chance){
-         this.color='green';
-        }else{
-         this.color='red';
-        }
-    }
-  }
+      if (chance) {
+        this.color = "green";
+      } else {
+        this.color = "red";
+      }
+    },
+  },
 };
 </script>
 
@@ -194,7 +196,6 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 
 .login_box {
   width: 400px;

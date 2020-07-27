@@ -70,14 +70,18 @@
         >
           <template slot="prepend">地点：</template>
           <template slot-scope="{ item }">
-            <div class="name">{{ item.name }}</div>
+            <div class="name">{{ item.title }}</div>
             <span class="addr">{{ item.address }}</span>
           </template>
         </el-autocomplete>
         <br />
         <br />
         <!-- <baiduMap :circlePath="circlePath" :zoom="zoom" :isShow="isShow" @onclick="onclick"></baiduMap> -->
-      <baidumap :mapcenter="centerLatLng" :oldmarker="oldMarker" @mapclick="pointChange"/>
+      <qqMap :mapcenter="centerLatLng"
+       :show="isShow"
+       :oldmarker="oldMarker" 
+       @mapclick="pointChange"
+       @geocoder="geocoder"/>
        </el-dialog>
     </el-card>
   </div>
@@ -152,34 +156,21 @@ export default {
           }
         ]
       },
-      circlePath: {
-        center: {
-          lng: 116.404,
-          lat: 39.915
-        },
-        radius: 100
-      },
       //被选择的id
       id:'',
       addressList: "",
       searchAddressList: "",
       zoom: 17,
       dialogVisible: false,
-      isShow: "none"
+      isShow: false
     };
   },
   watch: {
-    "circlePath.center": {
-      handler(newAddress) {
-        this.form.lng = newAddress.lng;
-        this.form.lat = newAddress.lat;
-      },
-      deep: true
-    }
   },
   created() {
     if (this.isEdit) {
       this.id = this.$route.params && this.$route.params.id;
+      this.isShow=true
       this.fetchData();
     }
   },
@@ -211,26 +202,21 @@ export default {
       });
     },
     fetchData() {
+
       findById(this.id).then(res => {
+        this.oldMarker= `${res.data.lat},${res.data.lng}`;
         let data = res.data;
         this.form = data;
       });
     },
-    onclick(point, addrComp) {
-      this.circlePath.center.lng = point.lng;
-      this.circlePath.center.lat = point.lat;
-      this.form.meetingAddress =
-        addrComp.province +
-        " " +
-        addrComp.city +
-        " " +
-        addrComp.district +
-        " " +
-        addrComp.street +
-        " " +
-        addrComp.streetNumber;
+    pointChange(point){
+     this.form.lat=point.lat
+     this.form.lng=point.lng
     },
-
+    geocoder(res){
+    res=res.detail
+    this.form.meetingAddress=res.address
+    },
     loadBaiduMap() {
       this.dialogVisible = true;
     },
@@ -238,6 +224,7 @@ export default {
       this.form.addressName = qs;
       if (qs !== "") {
         findAddress({ keyword: qs }).then(res => {
+          // console.log(res);
           this.addressList = res.data;
           cb(this.addressList);
         });
@@ -246,10 +233,13 @@ export default {
       }
     },
     handleSelect(data) {
-      this.circlePath.center.lng = data.location.lng;
-      this.circlePath.center.lat = data.location.lat;
+      // console.log(data);
+      this.oldMarker= `${data.location.lat},${data.location.lng}`;
+      this.form.lat=data.location.lat
+      this.form.lng=data.location.lng
       this.form.meetingAddress = data.address;
-      this.isShow = "";
+      this.form.addressName=data.title
+      this.isShow = true;
     }
   }
 };
