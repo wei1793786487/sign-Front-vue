@@ -94,14 +94,20 @@ export default {
           cancelButtonText: '不删',
           type: 'warning'
         }).then(() => {
-           unband(row.openid,"1")
+          console.log("1");
+          this.unband(row.openid,"1")
         }).catch(() => {
-           unband(row.openid,"0") 
+          console.log("0");
+          this.unband(row.openid,"0") 
         });
     },
     unband(id,type){
        unband(id,type).then((res) => {
-        console.log(res);
+         console.log(res);
+        this.$message({
+          message: '解绑成功',
+          type: 'success'
+        });
         this.getList()
       });
     }
