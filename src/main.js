@@ -14,7 +14,7 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import qs from 'qs';
-import BaiduMap from 'vue-baidu-map'
+
 import moment from 'moment'//导入文件
  
 import echarts from 'echarts'
@@ -30,9 +30,7 @@ Vue.prototype.$qs = qs
 
 
 Vue.use(ElementUI)
-Vue.use(BaiduMap, {
-  ak: '0H0UoHGaGfLCRaBoXStO5DfbvDO30TOg'
-})
+
 
 Vue.config.productionTip = false
 

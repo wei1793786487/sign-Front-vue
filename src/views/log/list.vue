@@ -9,8 +9,8 @@
           @keyup.enter.native="getList"
         />
         <el-button v-waves type="success" icon="el-icon-search" @click="getList">搜索</el-button>
-        <el-button v-show="isAdmin"
-          :style="{ display: visibleCancel }"
+        <el-button
+          v-show="isAdmin"
           type="danger"
           icon="el-icon-delete"
           @click="handleDeleteChose"
@@ -54,7 +54,6 @@
         <el-table-column align="center" label="时间(毫秒)" prop="time" />
 
         <el-table-column align="center" label="执行时间" prop="createTime" :formatter="dateFormat" />
-     
       </el-table>
 
       <pagination
@@ -72,8 +71,8 @@
 <script>
 import waves from "@/directive/waves";
 import Pagination from "@/components/Pagination";
-import { getLogList ,deleteLog} from "@/api/log";
-import store from '../../store'
+import { getLogList, deleteLog } from "@/api/log";
+import store from "../../store";
 export default {
   components: { Pagination },
   directives: { waves },
@@ -81,13 +80,14 @@ export default {
     return {
       list: null,
       total: 0,
-      isAdmin:false,
+      isAdmin: false,
       visibleCancel: "",
       listQuery: {
         page: 1,
         limit: 15,
-        serch: undefined
-      }
+        serch: undefined,
+      },
+      choseIds:[]
     };
   },
   created() {
@@ -96,20 +96,20 @@ export default {
   watch: {},
   methods: {
     getList() {
-      const hasRoles = store.getters.roles 
-      hasRoles.forEach(element=>{
-        if(element.roleName==="ADMIN"){
-          this.isAdmin=true;
+      const hasRoles = store.getters.roles;
+      hasRoles.forEach((element) => {
+        if (element.roleName === "ADMIN") {
+          this.isAdmin = true;
         }
-      })
+      });
       this.listLoading = true;
       getLogList(this.listQuery)
-        .then(res => {
+        .then((res) => {
           this.total = res.count;
           this.list = res.data;
           this.listLoading = false;
         })
-        .catch(res => {
+        .catch((res) => {
           this.listLoading = false;
         });
     },
@@ -117,30 +117,30 @@ export default {
       this.$confirm("此操作将永久删除, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           const loading = this.$loading({
             lock: true,
             text: "删除中",
             spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
+            background: "rgba(0, 0, 0, 0.7)",
           });
-          deleteLog(
-            this.$qs.stringify(data, { arrayFormat: "repeat" })
-          ).then(res => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList();
-            loading.close();
-          });
+          deleteLog(this.$qs.stringify(data, { arrayFormat: "repeat" })).then(
+            (res) => {
+              this.$message({
+                message: "删除成功",
+                type: "success",
+              });
+              this.getList();
+              loading.close();
+            }
+          );
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -158,16 +158,23 @@ export default {
       return this.$moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
     handleDeleteChose() {
+      if (this.choseIds.length==0) {
+          this.$message({
+            type: "info",
+            message: "请先选择要删除的日志",
+          });
+        return;
+      }
       this.delete({ ids: this.choseIds });
     },
     handleSelectionChange(data) {
       let choses = [];
-      data.forEach(element => {
+      data.forEach((element) => {
         choses.push(element.id);
       });
       this.choseIds = choses;
-    }
-  }
+    },
+  },
 };
 </script>
 
