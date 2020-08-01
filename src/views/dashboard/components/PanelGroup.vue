@@ -1,15 +1,13 @@
 <template>
   <el-row :gutter="15" class="panel-group">
     <el-col :span="8" class="card-panel-col">
-      <div class="card-panel" >
+      <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            人员总数
-          </div>
-          <count-to :start-val="0" :end-val="10" :duration="2600" class="card-panel-num" />
+          <div class="card-panel-text">人员总数</div>
+          <count-to :start-val="0" :end-val="personCount" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -19,43 +17,57 @@
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            会议总数
-          </div>
-          <count-to :start-val="0" :end-val="10" :duration="3000" class="card-panel-num" />
+          <div class="card-panel-text">会议总数</div>
+          <count-to :start-val="0" :end-val="meetingCount" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
-    <el-col  :span="8" class="card-panel-col">
+    <el-col :span="8" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="visits" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            用户总数
-          </div>
-          <count-to :start-val="0" :end-val="10" :duration="3200" class="card-panel-num" />
+          <div class="card-panel-text">小程序用户</div>
+          <count-to :start-val="0" :end-val="vxCount" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
-   
   </el-row>
 </template>
 
 <script>
-import CountTo from 'vue-count-to'
-
+import CountTo from "vue-count-to";
+import { getCount } from "@/api/user";
 export default {
   components: {
-    CountTo
+    CountTo,
+  },
+  data() {
+    return {
+      personCount:0,
+      meetingCount:0,
+      vxCount:0
+    };
+  },
+  created() {
+    this.getInfo();
   },
   methods: {
     handleSetLineChartData(type) {
-      this.$emit('handleSetLineChartData', type)
-    }
-  }
-}
+      this.$emit("handleSetLineChartData", type);
+    },
+    getInfo() {
+
+      getCount().then((res) => {
+       this.vxCount=res.data.vxcount;
+       this.personCount=res.data.personCount;
+       this.meetingCount=res.data.meetingCount;
+       console.log(this.vxCount);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -74,8 +86,8 @@ export default {
     overflow: hidden;
     color: #666;
     background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 
     &:hover {
       .card-panel-icon-wrapper {
@@ -95,7 +107,7 @@ export default {
       }
 
       .icon-shopping {
-        background: #34bfa3
+        background: #34bfa3;
       }
     }
 
@@ -112,7 +124,7 @@ export default {
     }
 
     .icon-shopping {
-      color: #34bfa3
+      color: #34bfa3;
     }
 
     .card-panel-icon-wrapper {
@@ -148,7 +160,7 @@ export default {
   }
 }
 
-@media (max-width:550px) {
+@media (max-width: 550px) {
   .card-panel-description {
     display: none;
   }

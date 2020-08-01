@@ -118,3 +118,11 @@ export function getUserById(id) {
     method: 'get',
   })
 }
+
+
+export function getCount() {
+  return request({
+    url: '/user/bashboard',
+    method: 'get',
+  })
+}
