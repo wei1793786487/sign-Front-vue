@@ -133,7 +133,9 @@ export default {
       this.delete({ ids: [data.id] });
     },
     handleSelectionChange() {},
-    handleCreate() {},
+    handleCreate() {
+      this.$router.push("/role/add");
+    },
     handleSelectionChange(data) {
       let choses = [];
       data.forEach(element => {

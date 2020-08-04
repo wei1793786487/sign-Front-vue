@@ -5,7 +5,7 @@
       <br />
       <el-form ref="form" :rules="rules" :model="form" label-width="120px">
         <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="请输入用户登录名" />
+          <el-input v-model="form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
 
         <el-form-item label="角色描述" prop="describe">
@@ -57,7 +57,6 @@ export default {
         if (valid) {
           if (!this.isEdit) {
               this.isDisable=true
-
             addRole(this.$qs.stringify(this.form)).then(res => {
               this.$message({
                 message: "添加成功",

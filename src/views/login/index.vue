@@ -122,7 +122,10 @@ export default {
               this.$router.push({ path: this.redirect || "/" });
             })
             .catch(() => {
-              fullscreenLoading = false;
+
+            }).finally(res=>{
+              console.log("调用了");
+             this.fullscreenLoading = false;
             });
         } else {
           return false;

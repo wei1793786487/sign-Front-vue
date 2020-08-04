@@ -68,9 +68,15 @@ service.interceptors.response.use(
       // if(response.config.method==="delete"&&response.config.url.indexOf("person") != -1){
       //  return res
       // }
-         
       // console.log(res);
-      
+      console.log(res);
+      if(res.code>2000&&res.code<2010){
+        Message({
+          message: res.msg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
@@ -78,11 +84,7 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+   
     return Promise.reject(error)
   }
 )
