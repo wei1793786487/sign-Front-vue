@@ -18,12 +18,13 @@
             v-loading.fullscreen.lock="fullscreenLoading"
           >
             <el-form-item prop="username">
-              <el-input v-model="loginForm.username" prefix-icon="el-icon-user-solid"></el-input>
+              <el-input v-model="loginForm.username" placeholder="请输入账号"  prefix-icon="el-icon-user-solid"></el-input>
             </el-form-item>
             <!-- 密码 -->
             <el-form-item prop="password">
               <el-input
                 type="password"
+                placeholder="请输入密码"
                 v-model="loginForm.password"
                 prefix-icon="el-icon-edit"
                 @keyup.enter.native="login"
@@ -75,8 +76,8 @@ export default {
       redirect: undefined,
       //登录表单的数据
       loginForm: {
-        username: "admin",
-        password: "lx1793786487",
+        username: "",
+        password: "",
       },
       loginFormRole: {
         //验证账号

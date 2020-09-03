@@ -13,7 +13,7 @@
             @clear="clearHandle"
             clearable
           >
-            <template slot="prepend">地点：</template>
+            <template slot="prepend">会议选择</template>
             <template slot-scope="{ item }">
               <div class="name">名称：{{ item.meetingName }}</div>
               <span class="addr">地点：{{ item.meetingAddress + item.addressName}}</span>

@@ -4,7 +4,7 @@
       <div class="filter-container">
         <el-input
           v-model="listQuery.meetingName"
-          placeholder="请输入会议姓名"
+          placeholder="请输入会议名称"
           style="width: 200px;"
           @keyup.enter.native="getList"
         />
