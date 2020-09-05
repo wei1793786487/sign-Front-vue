@@ -20,9 +20,28 @@
 
       <el-col :span="12">
         <el-card>
-          1、天爷爷地奶奶我不知道这里写啥了。<br>
-         
+          记事本可记录有关公司活动或事务、业务合作、个人日常琐事哦.
+          <!-- <div style="text-align: center;">
+            尚未佩妥剑，
+            <br />转眼便江湖。
+            <br />愿历尽千帆，
+            <br />归来仍少年。
+            <br />
+          </div>-->
         </el-card>
+        <br />
+
+        <el-card>
+          本项目基于vue-element-admin 模板，模板github地址:
+          <a>https://github.com/PanJiaChen/vue-element-admin/</a>
+        </el-card>
+        <br />
+
+        <el-card>如果您在此项目中发现任何bug或者问题，请issues，或者联系作者1793786487@qq.com</el-card>
+
+        <br />
+
+        <el-card>本项目使用 GPL 开源协议，您可以任意使用、修改此项目，但是应保证自由软件对所有用户是自由的。</el-card>
       </el-col>
     </el-row>
   </div>

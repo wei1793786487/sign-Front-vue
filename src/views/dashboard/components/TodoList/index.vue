@@ -2,7 +2,7 @@
   <section class="todoapp">
     <!-- header -->
     <header class="header">
-      <input class="new-todo" autocomplete="off" placeholder="大哥要不你写点啥" @keyup.enter="addTodo" />
+      <input class="new-todo" autocomplete="off" placeholder="备忘录" @keyup.enter="addTodo" />
     </header>
     <!-- main section -->
     <section v-show="todos.length" class="main">
