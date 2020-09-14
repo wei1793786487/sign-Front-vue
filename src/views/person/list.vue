@@ -39,7 +39,7 @@
           <el-upload
             :headers="headers"
             class="uploads"
-            action="http://localhost:8080/upload/Phone"
+            action="https://www.hqgml.com/api/upload/Phone"
             multiple
             :on-exceed="numberHandle"
             :limit="1"

@@ -49,7 +49,7 @@
          &ensp;&ensp; 衡量一个人的真正品格，是看他在知道没人看见的时候干些什么。
         </div>-->
       </div>
-      <video :style="fixStyle" autoplay loop muted class="fillWidth" v-on:canplay="canplay">
+      <video :style="fixStyle" autoplay loop muted class="fillWidth" v-on:oncanplaythrough="oncanplaythrough">
         <source src="@/assets/video/3.mp4" type="video/mp4" />浏览器不支持 video 标签，建议升级浏览器。
       </video>
 
@@ -105,7 +105,7 @@ export default {
   },
 
   methods: {
-    canplay() {
+    oncanplaythrough() {
       this.vedioCanPlay = true;
     },
     //点击重置表单

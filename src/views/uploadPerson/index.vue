@@ -5,7 +5,7 @@
        无法上传姓名过长用户。
     </aside>
     <div class="editor-container">
-      <dropzone id="myVueDropzone"  url="http://localhost:8080/upload/person" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+      <dropzone id="myVueDropzone"  url="https://www.hqgml.com/api/upload/person" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
     </div>
   </div>
 </template>
