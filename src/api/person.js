@@ -26,5 +26,6 @@ export function chancePerson(params) {
   return request({
     url: '/person/',
     method: 'put',
+    params
   })
 }
