@@ -116,6 +116,7 @@ export default {
             addUser(this.$qs.stringify(this.form)).then(res => {
               this.$message({
                 message: "添加成功",
+                   showClose: true,
                 type: "success"
               });
               this.isDisable = false;
@@ -129,6 +130,7 @@ export default {
           chanceUser(this.$qs.stringify(this.form)).then(res => {
             this.$message({
               message: "修改成功",
+                 showClose: true,
               type: "success"
             });
             this.isDisable = false;

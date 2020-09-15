@@ -211,6 +211,7 @@ export default {
          loading.close();
            this.$message({
           message: '发送成功',
+              showClose: true,
           type: 'success'
         });
       }).catch(res=>{

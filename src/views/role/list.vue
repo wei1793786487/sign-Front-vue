@@ -115,6 +115,7 @@ export default {
           ).then(res => {
             this.$message({
               message: "删除成功",
+                  showClose: true,
               type: "success"
             });
             this.getList();
@@ -124,6 +125,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
+                showClose: true,
             message: "已取消删除"
           });
         });

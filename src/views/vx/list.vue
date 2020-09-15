@@ -86,7 +86,12 @@ export default {
     },
     chance(row) {
       if(row.persons===null){
-        this.$message.error("该用户没绑定人员")
+            this.$message({
+          showClose: true,
+          message: '该用户没绑定人员',
+          type: 'error'
+        });
+      
         return
       }
     this.$confirm('是否删除该用户绑定的人员', '提示', {
@@ -106,6 +111,7 @@ export default {
          console.log(res);
         this.$message({
           message: '解绑成功',
+             showClose: true,
           type: 'success'
         });
         this.getList()

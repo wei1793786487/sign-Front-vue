@@ -60,6 +60,7 @@ export default {
             addRole(this.$qs.stringify(this.form)).then(res => {
               this.$message({
                 message: "添加成功",
+                 showClose: true,
                 type: "success"
               });
               this.isDisable=false
@@ -69,6 +70,7 @@ export default {
             chanceRole(this.$qs.stringify(this.form)).then(res => {
               this.$message({
                 message: "修改成功",
+                 showClose: true,
                 type: "success"
               });
             // this.fetchData()
@@ -77,7 +79,11 @@ export default {
             });
           }
         } else {
-          this.$message.error("请按要求填写表单");
+          this.$message({
+          showClose: true,
+          message: '请按要求填写表单',
+          type: 'error'
+        });
         }
       });
     },

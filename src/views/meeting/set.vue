@@ -153,6 +153,7 @@ export default {
         .then(res => {
           console.log(res);
           this.$message({
+                showClose: true,
             message: "发送成功",
             type: "success"
           });
@@ -182,6 +183,7 @@ export default {
             this.$qs.stringify(data, { arrayFormat: "repeat" })
           ).then(res => {
             this.$message({
+                  showClose: true,
               message: "删除成功",
               type: "success"
             });
@@ -191,6 +193,7 @@ export default {
         })
         .catch(() => {
           this.$message({
+                showClose: true,
             type: "info",
             message: "已取消删除"
           });

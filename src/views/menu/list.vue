@@ -288,6 +288,7 @@ export default {
      if(this.choseRoleList.length==0){
           this.$message({
           message: '请先选择你要分配的角色',
+           showClose: true,
           type: 'error'
         });
         return;

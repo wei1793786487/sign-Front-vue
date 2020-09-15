@@ -112,6 +112,7 @@ export default {
           this.dropzone.removeFile(file);
           this.$message({
             message: file.name + "文件名称超出最大限制",
+               showClose: true,
             type: "warning"
           });
         } else {

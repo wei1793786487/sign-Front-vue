@@ -130,6 +130,7 @@ export default {
             (res) => {
               this.$message({
                 message: "删除成功",
+                    showClose: true,
                 type: "success",
               });
               this.getList();
@@ -140,6 +141,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
+                showClose: true,
             message: "已取消删除",
           });
         });
@@ -161,6 +163,7 @@ export default {
       if (this.choseIds.length==0) {
           this.$message({
             type: "info",
+                showClose: true,
             message: "请先选择要删除的日志",
           });
         return;

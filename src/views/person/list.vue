@@ -246,12 +246,14 @@ export default {
       if (data.psersonForm === "") {
         this.$message({
           message: "人员名称不能为空",
+           showClose: true,
           type: "warning"
         });
       }
       chancePerson(this.psersonForm).then(res => {
         this.$message({
           message: "更新成功",
+           showClose: true,
           type: "success"
         });
         this.getList();
@@ -294,6 +296,7 @@ export default {
           ).then(res => {
             this.$message({
               message: "删除成功",
+               showClose: true,
               type: "success"
             });
             this.getList()
@@ -303,6 +306,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
+             showClose: true,
             message: "已取消删除"
           });
         });

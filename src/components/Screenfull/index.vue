@@ -25,6 +25,7 @@ export default {
       if (!screenfull.isEnabled) {
         this.$message({
           message: '您的浏览器不支持',
+              showClose: true,
           type: 'warning'
         })
         return false

@@ -181,7 +181,11 @@ export default {
       let isSuper = false;
       row.roles.forEach(element => {
         if (element.roleName === "ADMIN") {
-          this.$message.error("账号管理员不可修改状态");
+          this.$message({
+          showClose: true,
+          message: '账号管理员不可修改状态',
+          type: 'error'
+        });
           isSuper = true;
         }
       });
