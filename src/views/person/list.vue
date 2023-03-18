@@ -27,7 +27,7 @@
         <el-tooltip class="item" effect="dark" content="下载模板文件" placement="top">
           <el-link
             class="uploads"
-            href="https://www.hqgml.com/xls/人员信息.xlsx"
+            :href="href"
             :underline="false"
             type="info"
           >
@@ -39,7 +39,7 @@
           <el-upload
             :headers="headers"
             class="uploads"
-            action="https://www.hqgml.com/api/upload/Phone"
+            :action="upload_herf"
             multiple
             :on-exceed="numberHandle"
             :limit="1"
@@ -173,6 +173,8 @@ export default {
       }
     };
     return {
+      href:"",
+      upload_herf:"",
       list: null,
       listLoading: true,
       total: 0,
@@ -202,6 +204,7 @@ export default {
   created() {
     this.getList();
     this.setToken();
+    this.setSeverUrl();
   },
   watch: {
     choseIds: function(data) {
@@ -220,6 +223,10 @@ export default {
     }
   },
   methods: {
+    setSeverUrl(){
+     this.href=process.env.VUE_APP_SERVER_URL+"/xls/人员信息.xlsx"
+     this.upload_herf=process.env.VUE_APP_SERVER_URL+"/upload/Phone"
+    },
     getList(data) {
       this.listLoading = true;
       getPerSionList(this.listQuery)

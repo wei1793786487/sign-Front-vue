@@ -43,7 +43,7 @@ export default {
 .user-avator {
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: 30%;
   margin-left: 20px;
 }
 .user-info-cont div:first-child {
