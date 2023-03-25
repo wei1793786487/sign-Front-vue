@@ -5,7 +5,7 @@
        无法上传姓名过长用户。
     </aside>
     <div class="editor-container">
-      <dropzone id="myVueDropzone"  url="https://www.hqgml.com/api/upload/person" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+      <dropzone id="myVueDropzone"  :url="upload_herf" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
     </div>
   </div>
 </template>
@@ -16,7 +16,19 @@ import {deleteByUrl} from "@/api/person";
 export default {
   name: 'DropzoneDemo',
   components: { Dropzone },
+  data() {
+    return {
+      upload_herf:"",
+        
+    }
+  },
+  created() {
+    this.setSeverUrl();
+  },
   methods: {
+    setSeverUrl(){
+     this.upload_herf=process.env.VUE_APP_SERVER_URL+"/upload/person"
+    },
     dropzoneS(file) {
   
    },
